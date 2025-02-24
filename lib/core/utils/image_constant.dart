@@ -7,5 +7,8 @@ class ImageConstant {
   static String imgImage9 = '$imagePath/image9.png';
   static String imgImage10 = '$imagePath/image10.png';
   static String imgVector = '$imagePath/Vector.png';
+  static String imgUser = '$imagePath/user.png';
+  static String imgLock ='$imagePath/lock.png';
+  static String imgEmail = '$imagePath/img_email.png';
 
 }

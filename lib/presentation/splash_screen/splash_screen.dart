@@ -49,7 +49,7 @@ class SplashScreen extends StatelessWidget {
                               style: CustomTextStyles.headlineSmallBlack900,
                             ),
                             TextSpan(
-                              text: "lbl market".tr,
+                              text: "lbl_market".tr,
                               style: CustomTextStyles.headlineSmallGreenA700,
                             )
                           ],

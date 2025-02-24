@@ -162,7 +162,10 @@ class CustomTextStyles {
       theme.textTheme.titleSmall!.copyWith(
         color: appTheme.blueGray400,
       );
-
+  static TextStyle get titleSmallGreen300 =>
+      theme.textTheme.titleSmall!.copyWith(
+        color: appTheme.lightGreen900,
+      );
   static TextStyle get titleSmallBluegray70001 =>
       theme.textTheme.titleSmall!.copyWith(
         color: appTheme.blueGray70001,

@@ -1,3 +1,21 @@
 final Map<String, String> enUs = {
-
+  "lbl_welcome" : "Welcome",
+  "lbl_plants" : "Cho",
+  "lbl_full_name" : "Full Name",
+  "lbl_password" : "Password",
+  "lbl_login" : "Login in",
+  "lbl_sign_up" : "Sign Up",
+  "lbl_remember_me": "Remember me",
+  "msg_login_to_your_account" : "Login to your account",
+  "msg_forget_password" : "Forget Password?",
+  "msg_don_t_have_an_account" : "Dont have an account ?",
+  "lbl_smart" : "Smart ",
+  "lbl_market" : "Market",
+  "lbl_register" : "Register",
+  "msg_create_your_new" : "Create your new account",
+  "msg_already_have_an" : "already have an account",
+  "lbl_email" : "Email",
+  "msg_by_signing_you_agree" : "By signing you agree to our",
+  "msg_and_privacy_notice" : "term of use and privacy service",
+  "msg_confirm_password" : "Confirm Password",
 };
