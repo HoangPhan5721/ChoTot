@@ -10,5 +10,11 @@ class ImageConstant {
   static String imgUser = '$imagePath/user.png';
   static String imgLock ='$imagePath/lock.png';
   static String imgEmail = '$imagePath/img_email.png';
+  static String imgProduct1 = '$imagePath/img_product.png';
+  static String imgProduct2 = '$imagePath/img_product_1.png';
+  static String imgProduct3 = '$imagePath/img_product_2.png';
+  static String imgProduct4 = '$imagePath/img_product_3.png';
+  static String imgMoreVertical = '$imagePath/vertical.png';
+
 
 }

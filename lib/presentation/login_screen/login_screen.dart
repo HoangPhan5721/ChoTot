@@ -134,7 +134,8 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(height: 76.h),
                   CustomElevatedButton(
                     height: 56.h,
-                    text: "lbl_login".tr,
+                    text: "Log In",
+                    routeName: '/my_cart_screen', // Navigate to this route
                     buttonStyle: CustomButtonStyles.fillPrimary,
                     buttonTextStyle: theme.textTheme.titleLarge!,
                   ),

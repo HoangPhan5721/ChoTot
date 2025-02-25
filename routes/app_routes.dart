@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 // import '../presentation/app_navigation_screen/app_navigation_screen.dar
 // import '../presentation/home_screen/home_screen.dart';
 // import '../presentation/login_screen/login_screen.dart';
-// import '../presentation/my_cart_screen/my_cart_screen.dart';
+import '../lib/presentation/my_cart_screen/my_cart_screen.dart';
 // import '../presentation/order_screen/order_screen.dart';
 // import '../presentation/payment_screen/payment_screen.dart';
 // import '../presentation/register_screen/register_screen.dart';
@@ -24,7 +24,7 @@ class AppRoutes {
     // loginScreen: LoginScreen.builder,
     // registerScreen: RegisterScreen.builder,
     // orderScreen: OrderScreen.builder,
-    // myCartScreen: MyCartScreen.builder,
+    myCartScreen: MyCartScreen.builder,
     // paymentScreen: PaymentScreen.builder,
     // appNavigationScreen: AppNavigationScreen.builder,
     // initialRoute: SplashScreen.builder
