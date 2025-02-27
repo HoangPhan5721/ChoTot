@@ -38,12 +38,10 @@ class _ProductCardState extends State<ProductCard> {
     return Scaffold(
       body: Column(
         children: [
-          // Top Image Section with Back Button
           Stack(
             children: [
               ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(bottom: Radius.circular(24)),
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
                 child: Image.asset(
                   widget.imagePath,
                   height: screenHeight * 0.4,
@@ -64,8 +62,6 @@ class _ProductCardState extends State<ProductCard> {
               ),
             ],
           ),
-
-          // Product Details Section
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -84,7 +80,6 @@ class _ProductCardState extends State<ProductCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Product Name, Rating, and Quantity Selector
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -97,28 +92,34 @@ class _ProductCardState extends State<ProductCard> {
                           ),
                         ),
                       ),
-                      // Quantity Selector
                       Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(12),
+                          color: Color.fromRGBO(255, 111, 0, 1),
+                          borderRadius: BorderRadius.circular(24),
                         ),
                         child: Row(
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.remove),
+                              icon: const Icon(Icons.remove, color: Colors.white, size: 16),
+                              padding: EdgeInsets.zero,
+                              constraints: BoxConstraints(),
                               onPressed: () {
                                 setState(() {
                                   if (quantity > 1) quantity--;
                                 });
                               },
                             ),
+                            SizedBox(width: 6),
                             Text(
                               quantity.toString(),
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
                             ),
+                            SizedBox(width: 6),
                             IconButton(
-                              icon: const Icon(Icons.add),
+                              icon: const Icon(Icons.add, color: Colors.white, size: 16),
+                              padding: EdgeInsets.zero,
+                              constraints: BoxConstraints(),
                               onPressed: () {
                                 setState(() {
                                   quantity++;
@@ -130,52 +131,30 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 4),
-
-                  // Price and Rating
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         '\$${widget.price.toStringAsFixed(2)}',
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Colors.green,
+                          color: Color(0xFF0047AB),
                         ),
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 22),
-                          Text(
-                            widget.rating.toString(),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 12),
-
-                  // About Section
-                  const Text(
+                  const Text( 
                     "About",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                     style: TextStyle(color: Colors.grey, fontSize: 14),
                   ),
-
                   const SizedBox(height: 16),
-
-                  // Plant Metrics
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -184,15 +163,12 @@ class _ProductCardState extends State<ProductCard> {
                       _buildMetric(Icons.thermostat, '${widget.temperature}°', 'Temp'),
                     ],
                   ),
-
                   const SizedBox(height: 16),
-
-                  // Action Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.shopping_cart, color: Colors.green),
+                        icon: const Icon(Icons.shopping_cart, color: Color(0xFF0047AB)),
                         onPressed: widget.onAddToCart,
                       ),
                       const SizedBox(width: 8),
@@ -200,7 +176,7 @@ class _ProductCardState extends State<ProductCard> {
                         child: ElevatedButton(
                           onPressed: widget.onBuyNow,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green.shade700,
+                            backgroundColor: Color.fromRGBO(255, 111, 0, 1),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -230,7 +206,7 @@ class _ProductCardState extends State<ProductCard> {
   Widget _buildMetric(IconData icon, String value, String label) {
     return Column(
       children: [
-        Icon(icon, color: Colors.green.shade700, size: 28),
+        Icon(icon, color: Color(0xFF0047AB), size: 28),
         const SizedBox(height: 4),
         Text(
           value,
