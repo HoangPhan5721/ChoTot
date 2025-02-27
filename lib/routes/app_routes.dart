@@ -7,9 +7,10 @@ import 'package:flutter/material.dart';
 // import '../presentation/payment_screen/payment_screen.dart';
 // import '../presentation/register_screen/register_screen.dart';
 import '../presentation/splash_screen/splash_screen.dart';
+import '../presentation/home_page_screen/homepage_screen.dart';
 class AppRoutes {
   static const String splashScreen = '/splash_screen';
-  static const String homeScreen = '/home_screen';
+  static const String homeScreen = '/homepage_screen';
   static const String homeInitialPage = '/home_initial_page';
   static const String loginScreen = '/login_screen';
   static const String registerScreen = '/register_screen';
@@ -20,13 +21,13 @@ class AppRoutes {
   static const String initialRoute = '/initialRoute';
   static Map<String, WidgetBuilder> get routes => {
     splashScreen: SplashScreen.builder,
-    // homeScreen: HomeScreen.builder,
+    homeScreen: HomePageScreen.builder,
     // loginScreen: LoginScreen.builder,
     // registerScreen: RegisterScreen.builder,
     // orderScreen: OrderScreen.builder,
     // myCartScreen: MyCartScreen.builder,
     // paymentScreen: PaymentScreen.builder,
-    // appNavigationScreen: AppNavigationScreen.builder,
-    initialRoute: SplashScreen.builder
+    //appNavigationScreen: AppNavigationScreen.builder,
+    initialRoute: HomePageScreen.builder,
   };
 }

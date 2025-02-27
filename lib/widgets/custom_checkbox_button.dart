@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../core/app_export.dart';
+import 'package:intern/core/app_export.dart';
+import 'package:intern/theme/theme_helper.dart';
 
 // ignore_for_file: must_be_immutable
 class CustomCheckboxButton extends StatelessWidget {

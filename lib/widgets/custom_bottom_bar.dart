@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intern/core/app_export.dart';
 import 'package:intern/core/utils/image_constant.dart';
+
 import 'package:intern/widgets/custom_image_view.dart';
-import '../core/app_export.dart';
 
 enum BottomBarEnum { Image7, Image9, Image10, Image8 }
 
 // ignore_for_file: must_be_immutable
 class CustomBottomBar extends StatefulWidget {
-  CustomBottomBar({this.onChanged});
+  CustomBottomBar({super.key, this.onChanged});
 
   Function(BottomBarEnum)? onChanged;
 

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intern/core/app_export.dart';
 import 'package:intern/core/utils/image_constant.dart';
+
+
 import 'package:intern/widgets/custom_image_view.dart';
-import '../../core/app_export.dart';
+
 import 'bloc/splash_bloc.dart';
 import 'models/splash_model.dart';
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key})
-      : super(
-    key: key,
-  );
+  const SplashScreen({super.key});
 
   static Widget builder(BuildContext context) {
     return BlocProvider<SplashBloc>(
@@ -20,6 +20,13 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     // Delay chuyển màn hình sau 3 giây
+    Future.delayed(Duration(seconds: 3), () {
+      // Điều hướng sang HomePage sau khi SplashScreen hiển thị trong 3 giây
+      
+      Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
+    });
+  
     return BlocBuilder<SplashBloc, SplashState>(
         builder: (context, state) {
           return Scaffold(
