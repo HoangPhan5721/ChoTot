@@ -26,14 +26,14 @@ class NotificationScreenState extends State<NotificationScreen> with SingleTicke
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF4CAF50), // Màu nền của AppBar
+        backgroundColor: Color(0xFF0047AB), // Màu nền của AppBar
         title: Text(
           'Thông báo',
-          style: TextStyle(fontSize: 18),
+          style: TextStyle(fontSize: 18, color: Colors.white),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new),
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -51,7 +51,7 @@ class NotificationScreenState extends State<NotificationScreen> with SingleTicke
               // indicator: BoxDecoration(
                 // color: Colors.transparent, // Ẩn chỉ báo dưới tab
               // ),
-              indicatorColor: Colors.green, // Màu chỉ báo dưới tab
+              indicatorColor: Color(0xFF0047AB), // Màu chỉ báo dưới tab
               // indicatorWeight: 4.0,
               labelColor: Colors.black,    // Màu text khi tab được chọn
               unselectedLabelColor: Colors.grey, // Màu text khi tab không được chọn

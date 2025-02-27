@@ -8,6 +8,8 @@ import 'package:intern/presentation/home_page_screen/widgets/category_list.dart'
 import 'package:intern/presentation/home_page_screen/widgets/product_grid.dart';
 import 'package:intern/widgets/custom_image_view.dart';
 
+import '../../routes/app_routes.dart';
+
 import '../notification_screen/notification_screen.dart';
 //import 'package:intern/widgets/custom_search_delegate.dart';
 
@@ -23,7 +25,7 @@ class HomePageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF4CAF50),
+        backgroundColor: Color(0xFF0047AB),
         title: Container(
           width: 300,
           height: 45,
@@ -123,12 +125,17 @@ class HomePageScreen extends StatelessWidget {
           BottomNavigationBarItem(
               icon: Icon(Icons.account_circle), label: 'Profile'),
         ],
-        selectedItemColor: Colors.green, // Màu sắc khi item được chọn
+        selectedItemColor: Color(0xFF0047AB), // Màu sắc khi item được chọn
         unselectedItemColor: Colors.grey, // Màu sắc khi item không được chọn
         backgroundColor: Colors.white, // Màu nền của BottomNavigationBar
         showSelectedLabels: true, // Hiển thị label của item đã chọn
         showUnselectedLabels: true, // Hiển thị label của item không chọn
         type: BottomNavigationBarType.fixed, // Đảm bảo các item phân bố đều
+       onTap: (index) {
+          if (index == 2) {  // Khi nhấn vào "Favorites"
+            Navigator.pushNamed(context, AppRoutes.favoriteScreen);  // Điều hướng đến FavoriteScreen
+          }
+        },
       ),
     );
   }

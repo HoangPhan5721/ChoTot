@@ -40,7 +40,7 @@ class CategoryItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center, // Căn giữa theo chiều ngang
         children: [
           // Đảm bảo icon luôn ở trên cùng và căn giữa
-          Icon(icon, size: 40, color: Color(0xFF4CAF50)),
+          Icon(icon, size: 40, color: Color(0xFF0047AB)),
           SizedBox(height: 8), // Khoảng cách giữa icon và text
           // Text sẽ tự động xuống dòng nhưng sẽ căn chỉnh đều với icon
           Text(

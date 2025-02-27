@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 // import '../presentation/order_screen/order_screen.dart';
 // import '../presentation/payment_screen/payment_screen.dart';
 // import '../presentation/register_screen/register_screen.dart';
+import '../presentation/favorite_screen/favorite_screen.dart';
 import '../presentation/splash_screen/splash_screen.dart';
 import '../presentation/home_page_screen/homepage_screen.dart';
+
 class AppRoutes {
   static const String splashScreen = '/splash_screen';
   static const String homeScreen = '/homepage_screen';
@@ -19,15 +21,17 @@ class AppRoutes {
   static const String paymentScreen = '/payment_screen';
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String initialRoute = '/initialRoute';
+  static const String favoriteScreen = '/favorite_screen';
   static Map<String, WidgetBuilder> get routes => {
-    splashScreen: SplashScreen.builder,
-    homeScreen: HomePageScreen.builder,
-    // loginScreen: LoginScreen.builder,
-    // registerScreen: RegisterScreen.builder,
-    // orderScreen: OrderScreen.builder,
-    // myCartScreen: MyCartScreen.builder,
-    // paymentScreen: PaymentScreen.builder,
-    //appNavigationScreen: AppNavigationScreen.builder,
-    initialRoute: HomePageScreen.builder,
-  };
+        splashScreen: SplashScreen.builder,
+        homeScreen: HomePageScreen.builder,
+        favoriteScreen: (context) => FavoriteScreen(),
+        // loginScreen: LoginScreen.builder,
+        // registerScreen: RegisterScreen.builder,
+        // orderScreen: OrderScreen.builder,
+        // myCartScreen: MyCartScreen.builder,
+        // paymentScreen: PaymentScreen.builder,
+        //appNavigationScreen: AppNavigationScreen.builder,
+        initialRoute: HomePageScreen.builder,
+      };
 }
