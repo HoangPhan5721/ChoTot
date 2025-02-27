@@ -142,6 +142,18 @@ class _ProductCardState extends State<ProductCard> {
                           color: Color(0xFF0047AB),
                         ),
                       ),
+                      Row(
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 22),
+                          Text(
+                            widget.rating.toString(),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
