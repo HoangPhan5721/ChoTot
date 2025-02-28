@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'chat_screen.dart';
+
 
 class ProductCard extends StatefulWidget {
   final String name;
@@ -195,7 +197,18 @@ class _ProductCardState extends State<ProductCard> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: widget.onBuyNow,
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatScreen(
+                                    sellerId: '12345', // Replace with actual seller ID from API later
+                                    sellerName: "Seller Name", // Replace with API data later
+                                    profileImage: "https://example.com/profile.jpg", // Replace with API data later
+                                  ),
+                                ),
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF325A3E),
                               padding: const EdgeInsets.symmetric(vertical: 14),
