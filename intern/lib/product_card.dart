@@ -95,7 +95,7 @@ class _ProductCardState extends State<ProductCard> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                         decoration: BoxDecoration(
-                          color: Color.fromRGBO(255, 111, 0, 1),
+                          color: Color(0xFF325A3E), // Changed quantity button color
                           borderRadius: BorderRadius.circular(24),
                         ),
                         child: Row(
@@ -139,7 +139,7 @@ class _ProductCardState extends State<ProductCard> {
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF0047AB),
+                          color: Color(0xFF325A3E),
                         ),
                       ),
                       Row(
@@ -157,54 +157,60 @@ class _ProductCardState extends State<ProductCard> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  const Text( 
+                  const Text(
                     "About",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                    "The Transformation Belt used when transforming into Kamen Rider Horobi Arc Scorpion. The concept of an Ark is also stored in the loaded Ark Scorpion Progrise Key.",
                     style: TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildMetric(Icons.height, '${widget.height}\'', 'Height'),
-                      _buildMetric(Icons.water_drop, '${widget.humidity}%', 'Humidity'),
-                      _buildMetric(Icons.thermostat, '${widget.temperature}°', 'Temp'),
-                    ],
+                  Spacer(), // Pushes content up
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildMetric(Icons.height, '${widget.height}\'', 'Height'),
+                        _buildMetric(Icons.water_drop, '${widget.humidity}%', 'Humidity'),
+                        _buildMetric(Icons.thermostat, '${widget.temperature}°', 'Temp'),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.shopping_cart, color: Color(0xFF0047AB)),
-                        onPressed: widget.onAddToCart,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: widget.onBuyNow,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromRGBO(255, 111, 0, 1),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                  SizedBox(height: 8), // Reduce the gap between metrics and buttons
+
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.call, color: Color(0xFF325A3E), size: 28), // Call icon
+                          onPressed: widget.onAddToCart,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: widget.onBuyNow,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF325A3E),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
-                          ),
-                          child: const Text(
-                            'BUY NOW',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                            child: const Text(
+                              '💬 Chat',
+                              style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -218,7 +224,7 @@ class _ProductCardState extends State<ProductCard> {
   Widget _buildMetric(IconData icon, String value, String label) {
     return Column(
       children: [
-        Icon(icon, color: Color(0xFF0047AB), size: 28),
+        Icon(icon, color: Color(0xFF325A3E), size: 28),
         const SizedBox(height: 4),
         Text(
           value,

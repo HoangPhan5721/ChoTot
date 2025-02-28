@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(title: const Text("Product Card Preview")),
         body: Center(
           child: ProductCard(
-            name: 'Test Plant',
-            price: 29.99,
+            name: 'Extinction Driver',
+            price: 34.99,
             imagePath: 'assets/images/product.jpg',
             height: 12.5,
             humidity: 80,
