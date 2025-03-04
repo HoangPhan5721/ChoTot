@@ -11,7 +11,7 @@ import 'bloc/my_cart_bloc.dart';
 import 'models/cartitemlist_item_model.dart';
 import 'models/my_cart_model.dart';
 import 'widgets/cartitemslist_item_widget.dart';
-
+import '../../widgets/custom_bottom_bar.dart';
 class MyCartScreen extends StatelessWidget {
   const MyCartScreen({Key? key})
       : super(
@@ -27,32 +27,6 @@ class MyCartScreen extends StatelessWidget {
       child: MyCartScreen(),
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     backgroundColor: theme.colorScheme.primaryContainer,
-  //     appBar: _buildAppBar(context),
-  //     body: SafeArea(
-  //       top: false,
-  //       child: SizedBox(
-  //         width: double.maxFinite,
-  //         child: SingleChildScrollView(
-  //           child: SizedBox(
-  //             width: double.maxFinite,
-  //             child: Column(
-  //               children: [
-  //                 SizedBox(height: 28.h),
-  //                 _buildCartItemsList(context),
-  //                 _buildOrderSummary(context)
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,27 +41,44 @@ class MyCartScreen extends StatelessWidget {
                 child: _buildCartItemsList(context),
               ),
             ),
-            _buildOrderSummary(context), // Fixed at the bottom
+            // _buildOrderSummary(context), // Fixed at the bottom
           ],
         ),
       ),
+            bottomNavigationBar:
+            SizedBox(
+            width: double.maxFinite,
+            child: _buildBottomBar(context),
+            )
     );
   }
-
+  Widget _buildBottomBar(BuildContext context) {
+    return SizedBox(
+      width: double.maxFinite,
+      child: CustomBottomBar(
+        onChanged: (BottomBarEnum type) {},
+      ),
+    );
+  }
   /// Section Widget
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar(
       leadingWidth: 55.h,
-      leading: AppbarLeadingIconbuttonTwo(
-        imagePath: ImageConstant.imgArrowLeft,
-        margin: EdgeInsets.only(
-          left: 25.h,
-          top: 12.h,
-          bottom: 13.h,
+      leading: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, '/post_screen');
+        },
+        child: AppbarLeadingIconbuttonTwo(
+          imagePath: ImageConstant.imgArrowLeft,
+          margin: EdgeInsets.only(
+            left: 25.h,
+            top: 12.h,
+            bottom: 13.h,
+          ),
         ),
       ),
       title: AppbarTitle(
-        text: "lbl_my_cart".tr,
+        text: "lbl_my_post".tr,
         margin: EdgeInsets.only(left: 100.h),
       ),
       actions: [
@@ -137,8 +128,12 @@ class MyCartScreen extends StatelessWidget {
       text: "msg_place_your_order".tr,
       buttonStyle: CustomButtonStyles.outlineBlack,
       buttonTextStyle: CustomTextStyles.titleMediumPrimaryContainer,
+      onPressed: () {
+        Navigator.pushNamed(context, '/post_screen');
+      },
     );
   }
+
 
   /// Section Widget
   Widget _buildOrderSummary(BuildContext context) {

@@ -150,13 +150,14 @@ class ColorSchemes {
 class LightCodeColors {
 // Black
   Color get black900 => Color(0XFF000000);
-
+  Color get deepPurple20001 => Color(0XFF7A5CFA);
 // BlueGray
   Color get blueGray100 => Color(0XFFD9D9D9);
 
   Color get blueGray10001 => Color(0XFFD3D5D3);
 
   Color get blueGray400 => Color(0XFF8A8A8A);
+  Color get blueA400 => Color(0XFF1573FE);
 
   Color get blueGray40001 => Color(0XFF8C9691);
 
@@ -167,7 +168,7 @@ class LightCodeColors {
   Color get blueGray70002 => Color(0XFF3A7154);
 
   Color get blueGray800 => Color(0XFF325A3E);
-
+  Color get blueGray10002 => Color(0XFFCCCCCC);
 // Gray
   Color get gray200 => Color(0XFFF0F0F0);
 

@@ -20,6 +20,15 @@ class CustomButtonStyles {
   elevation: 0,
   padding: EdgeInsets.zero,
   );
+
+  static ButtonStyle get fillBlueGray => ElevatedButton.styleFrom(
+    backgroundColor: appTheme.blueGray800,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8.h),
+    ),
+    elevation: 0,
+    padding: EdgeInsets.zero,
+  );
 // Outline button style
   static ButtonStyle get outlineBlack => ElevatedButton.styleFrom(
       backgroundColor: appTheme.blueGray70002,

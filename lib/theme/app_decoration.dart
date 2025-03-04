@@ -11,6 +11,20 @@ class AppDecoration {
 
   static BoxDecoration get fillBluegray70001 =>
       BoxDecoration(color: appTheme.blueGray70001);
+  static BoxDecoration get lightGray0 =>BoxDecoration(
+    color: theme.colorScheme.primaryContainer,
+    boxShadow: [
+      BoxShadow(
+        color: appTheme.black900.withAlpha(1),
+        spreadRadius: 2.h,
+        blurRadius: 2.h,
+        offset: Offset(
+          0,
+          1,
+        )
+      )
+    ]
+  );
 
   static BoxDecoration get fillGray =>
       BoxDecoration(color: appTheme.gray200);

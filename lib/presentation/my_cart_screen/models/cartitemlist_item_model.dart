@@ -17,7 +17,7 @@ class CartitemslistItemModel extends Equatable {
     loremipsum = loremipsum ?? "lbl_lorem_ipsum".tr;
     tf = tf ?? "lbl".tr;
     one = one ?? "lbl_1".tr;
-    one1 = one1 ?? "lbl2".tr;
+    one1 = one1 ?? "lbl_2".tr;
     id = id ?? "";
   }
   String? aloeVeraOne;

@@ -25,11 +25,29 @@ class CustomTextStyles {
       theme.textTheme.displayMedium!.inter
           .copyWith(color: theme.colorScheme.onPrimary);
 
+
+  static TextStyle get bodyLargeDeeppurpleA20001 =>
+      theme.textTheme.bodyLarge!
+          .copyWith(color: appTheme.deepPurple20001);
   static TextStyle get displayMediumPrimary =>
       theme.textTheme.displayMedium!.copyWith(
         color: theme.colorScheme.primary,
       );
+  static TextStyle get bodyLargeOnPrimaryContainer =>
+      theme.textTheme.bodyLarge!.copyWith(
+        color: theme.colorScheme.onPrimaryContainer,
+      );
+  static TextStyle get bodyMediumBlueA400 =>
+      theme.textTheme.bodyMedium!.copyWith(
+        color: appTheme.blueA400,
+      );
 
+  static TextStyle get titleLargePoppinsBlack900 =>
+      theme.textTheme.titleLarge!.copyWith(
+        color: appTheme.black900,
+        fontSize: 22.fSize,
+        fontWeight: FontWeight.w600,
+      );
 // Headline text style
   static TextStyle get headlineSmallBlack900 =>
       theme.textTheme.headlineSmall!.copyWith(
@@ -77,7 +95,23 @@ class CustomTextStyles {
       theme.textTheme.labelLarge!.copyWith(
         color: appTheme.blueGray800,
       );
+  static TextStyle get labelLargeInterPrimary =>
+      theme.textTheme.labelLarge!.inter.copyWith(
+        color: theme.colorScheme.primary,
+        fontWeight: FontWeight.w700,
+      );
 
+
+  static TextStyle get labelLargeInterBluegray800 =>
+      theme.textTheme.labelLarge!.inter.copyWith(
+        color: appTheme.blueGray800,
+        fontWeight: FontWeight.w500,
+      );
+  static TextStyle get labelLargeInterGray50002 =>
+      theme.textTheme.labelLarge!.copyWith(
+        color: appTheme.gray50002,
+        fontWeight: FontWeight.w500,
+      );
   static TextStyle get labelLargeGray50002 =>
       theme.textTheme.labelLarge!.copyWith(
         color: appTheme.gray50002,
@@ -106,6 +140,11 @@ class CustomTextStyles {
         fontWeight: FontWeight.w500,
       );
 
+  static TextStyle get titleSmallGray50002 =>
+      theme.textTheme.titleSmall!.copyWith(
+        color: appTheme.gray50002,
+        fontSize: 15.fSize,
+      );
   static TextStyle get titleLargeInterGray50003 =>
       theme.textTheme.titleLarge!.inter.copyWith(
         color: appTheme.gray50003,
