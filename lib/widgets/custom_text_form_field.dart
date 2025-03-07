@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/app_export.dart';
+import 'package:intern/core/app_export.dart';
 
 extension TextFormFieldStyleHelper on CustomTextFormField {
   static OutlineInputBorder get fillGray => OutlineInputBorder(

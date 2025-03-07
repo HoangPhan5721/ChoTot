@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/app_export.dart';
+import 'package:intern/core/app_export.dart';
 import 'theme_helper.dart';
 
 extension on TextStyle {

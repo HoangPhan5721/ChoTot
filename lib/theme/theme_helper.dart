@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../core/app_export.dart';
+import 'package:intern/core/app_export.dart';
+import 'package:intern/core/utils/pref_utils.dart';
 
 LightCodeColors get appTheme => ThemeHelper().themeColor();
 

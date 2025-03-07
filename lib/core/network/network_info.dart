@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:intern/main.dart';
+
 // For checking internet connectivity
 abstract class NetworkInfoI {
   Future<bool> isConnected();
