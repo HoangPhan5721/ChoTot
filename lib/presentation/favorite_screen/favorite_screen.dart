@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intern/presentation/favorite_screen/bloc/favorite_bloc.dart';
 import 'package:intern/presentation/favorite_screen/bloc/favorite_event.dart';
 import 'package:intern/presentation/favorite_screen/bloc/favorite_state.dart';
+import 'package:intern/widgets/custom_bottom_bar.dart';
+
+import '../../routes/app_routes.dart'; // Import custom bottom bar
 
 class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({super.key});
@@ -19,12 +22,6 @@ class FavoriteScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white), // Đổi màu icon mũi tên quay lại thành trắng
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       body: BlocProvider(
         create: (context) => FavoriteBloc()..add(LoadFavoritesEvent()),
@@ -50,6 +47,7 @@ class FavoriteScreen extends StatelessWidget {
           },
         ),
       ),
+      bottomNavigationBar: CustomBottomBar(),
     );
   }
 }

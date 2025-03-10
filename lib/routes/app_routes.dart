@@ -22,6 +22,7 @@ class AppRoutes {
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String initialRoute = '/initialRoute';
   static const String favoriteScreen = '/favorite_screen';
+  static const String profileScreen = '/profile_screen';
   static Map<String, WidgetBuilder> get routes => {
         splashScreen: SplashScreen.builder,
         homeScreen: HomePageScreen.builder,

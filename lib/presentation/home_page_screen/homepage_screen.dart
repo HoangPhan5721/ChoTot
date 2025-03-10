@@ -6,10 +6,9 @@ import 'package:intern/presentation/home_page_screen/bloc/homepage_event.dart';
 import 'package:intern/presentation/home_page_screen/bloc/homepage_state.dart';
 import 'package:intern/presentation/home_page_screen/widgets/category_list.dart';
 import 'package:intern/presentation/home_page_screen/widgets/product_grid.dart';
+import 'package:intern/widgets/custom_bottom_bar.dart';
 import 'package:intern/widgets/custom_image_view.dart';
-
-import '../../routes/app_routes.dart';
-
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../notification_screen/notification_screen.dart';
 //import 'package:intern/widgets/custom_search_delegate.dart';
 
@@ -23,6 +22,8 @@ class HomePageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final PageController pageController = PageController();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF0047AB),
@@ -49,7 +50,7 @@ class HomePageScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications),
+            icon: Icon(Icons.notifications, color: Colors.white,),
             onPressed: () {
               Navigator.push(
                 context,
@@ -58,85 +59,105 @@ class HomePageScreen extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: Icon(Icons.chat),
+            icon: Icon(Icons.chat, color: Colors.white,),
             onPressed: () {},
           ),
         ],
       ),
       body: BlocProvider(
         create: (context) => HomePageBloc()..add(LoadProductList()),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Banner quảng cáo sử dụng CustomImageView
-              CustomImageView(
-                imagePath: ImageConstant
-                    .imgBanner, // Sử dụng imgBanner từ ImageConstants
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-              // Khám phá danh mục
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Khám phá danh mục',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    // Banner quảng cáo sử dụng PageView
+                    Container(
+                      height: 180,
+                      child: PageView(
+                        controller: pageController,
+                        children: [
+                          CustomImageView(
+                            imagePath: ImageConstant.imgBanner,
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                          CustomImageView(
+                            imagePath: ImageConstant.imgBanner2,
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                          CustomImageView(
+                            imagePath: ImageConstant.imgBanner3,
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                          
+                        ],
+                      ),
+                    ),
+                    // SmoothPageIndicator
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SmoothPageIndicator(
+                        controller: pageController,
+                        count: 3,
+                        effect: WormEffect(
+                          dotHeight: 8.0,
+                          dotWidth: 8.0,
+                          spacing: 4.0,
+                          dotColor: Colors.grey,
+                          activeDotColor: Colors.blue,
+                        ),
+                      ),
+                    ),
+                    // Khám phá danh mục
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Khám phá danh mục',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                      ),
+                    ),
+                    CategoryList(),
+                    // Tin đăng mới
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Tin đăng mới',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              CategoryList(),
-              // Tin đăng mới
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Tin đăng mới',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                ),
-              ),
-              BlocBuilder<HomePageBloc, HomePageState>(
-                builder: (context, state) {
-                  if (state is HomePageLoading) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (state is HomePageLoaded) {
-                    return ProductGrid(productList: state.productList);
-                  } else if (state is HomePageError) {
-                    return Center(child: Text(state.message));
-                  }
-                  return Container();
-                },
-              ),
-            ],
+            ];
+          },
+          body: BlocBuilder<HomePageBloc, HomePageState>(
+            builder: (context, state) {
+              if (state is HomePageLoading) {
+                return Center(child: CircularProgressIndicator());
+              } else if (state is HomePageLoaded) {
+                return ProductGrid(productList: state.productList);
+              } else if (state is HomePageError) {
+                return Center(child: Text(state.message));
+              }
+              return Container();
+            },
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart), label: 'Cart'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: 'Favorites'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle), label: 'Profile'),
-        ],
-        selectedItemColor: Color(0xFF0047AB), // Màu sắc khi item được chọn
-        unselectedItemColor: Colors.grey, // Màu sắc khi item không được chọn
-        backgroundColor: Colors.white, // Màu nền của BottomNavigationBar
-        showSelectedLabels: true, // Hiển thị label của item đã chọn
-        showUnselectedLabels: true, // Hiển thị label của item không chọn
-        type: BottomNavigationBarType.fixed, // Đảm bảo các item phân bố đều
-       onTap: (index) {
-          if (index == 2) {  // Khi nhấn vào "Favorites"
-            Navigator.pushNamed(context, AppRoutes.favoriteScreen);  // Điều hướng đến FavoriteScreen
-          }
-        },
-      ),
+      bottomNavigationBar: CustomBottomBar(),
     );
   }
 }

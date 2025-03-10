@@ -8,4 +8,6 @@ class ImageConstant {
   static String imgImage10 = '$imagePath/image10.png';
   static String imgVector = '$imagePath/Vector.png';
   static String imgBanner = '$imagePath/banner.png';
+  static String imgBanner2 = '$imagePath/banner2.png';
+  static String imgBanner3 = '$imagePath/banner3.png';
 }
