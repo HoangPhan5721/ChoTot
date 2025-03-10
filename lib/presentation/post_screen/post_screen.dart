@@ -53,7 +53,11 @@ class PostScreen extends StatelessWidget {
                   _buildTitleInputSection(context),
                   SizedBox(height: 32.h),
                   _buildPassword(context),
-                  SizedBox(height: 58.h),
+                  SizedBox(height: 32.h),
+                  _buildProductName(context),
+                  SizedBox(height: 32.h),
+                  _buildDescription(context),
+                  SizedBox(height: 32.h),
                   // _buildErrorMessageSection(context),
                   // SizedBox(height: 32.h),
                   _buildPriceInputSection(context),
@@ -146,7 +150,48 @@ class PostScreen extends StatelessWidget {
       ),
     );
   }
-
+  // Widget _buildProductStatusSection(BuildContext context) {
+  //   int status = 0; // 0: Used, 1: New
+  //   return Container(
+  //     width: double.maxFinite,
+  //     margin: EdgeInsets.only(left: 6.h),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text(
+  //           "lbl_product_status".tr,
+  //           style: Theme.of(context).textTheme.labelLarge,
+  //         ),
+  //         SizedBox(height: 8),
+  //         Row(
+  //           children: [
+  //             Radio<int>(
+  //               value: 1,
+  //               groupValue: status,
+  //               onChanged: (int? value) {
+  //                 setState(() {
+  //                   status = value!;
+  //                 });
+  //               },
+  //             ),
+  //             Text("Used"),
+  //             SizedBox(width: 16),
+  //             Radio<int>(
+  //               value: 0,
+  //               groupValue: status,
+  //               onChanged: (int? value) {
+  //                 setState(() {
+  //                   status = value!;
+  //                 });
+  //               },
+  //             ),
+  //             Text("New"),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   /// Section Widget
   Widget _buildCategoryInputSection(BuildContext context) {
     return BlocSelector<PostBloc, PostState, TextEditingController?>(
@@ -169,7 +214,6 @@ class PostScreen extends StatelessWidget {
       width: double.maxFinite,
       margin: EdgeInsets.only(left: 6.h),
       child: Column(
-
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -182,7 +226,40 @@ class PostScreen extends StatelessWidget {
       ),
     );
   }
-
+  Widget _buildDescription(BuildContext context) {
+    return Container(
+      width: double.maxFinite,
+      margin: EdgeInsets.only(left: 6.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "lbl_category".tr,
+            style: theme.textTheme.labelLarge,
+          ),
+          SizedBox(height: 8),
+          _buildCategoryInputSection(context)
+        ],
+      ),
+    );
+  }
+  Widget _buildProductName(BuildContext context) {
+    return Container(
+      width: double.maxFinite,
+      margin: EdgeInsets.only(left: 6.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "lbl_category".tr,
+            style: theme.textTheme.labelLarge,
+          ),
+          SizedBox(height: 8),
+          _buildCategoryInputSection(context)
+        ],
+      ),
+    );
+  }
   /// Section Widget
   Widget _buildDescriptionInputSection(BuildContext context) {
     return SizedBox(

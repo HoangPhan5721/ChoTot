@@ -215,6 +215,7 @@ class LightCodeColors {
   Color get lightGreen100 => Color(0XFFE2FFD1);
 
   Color get lightGreen400 => Color(0XFF81D065);
+  Color get blueBackground => Color(0xFF0047AB);
 
   Color get lightGreen900 => Color(0XFF3A7F0D);
 }

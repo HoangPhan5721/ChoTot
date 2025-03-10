@@ -4,10 +4,11 @@ import 'package:intern/widgets/custom_image_view.dart';
 import '../core/app_export.dart';
 
 enum BottomBarEnum {
-  Image7, Image9, Image10, Image8,
+  Image77, Image99, Image100, Image88,
   home2, manage2, post2, user2,
   home3, manage3, post3, user3,
   home4, manage4, post4, user4,
+  home, manage, post, user,
 }
 
 class CustomBottomBar extends StatefulWidget {
@@ -23,7 +24,18 @@ class CustomBottomBarState extends State<CustomBottomBar> {
   int selectedIndex = 0;
 
   List<BottomMenuModel> getBottomMenuList(String? route) {
+    if (route == null) {
+      return []; // Trả về danh sách rỗng nếu route không hợp lệ
+    }
+
     switch (route) {
+      case '/homepage_screen':
+        return [
+          BottomMenuModel(icon: ImageConstant.home, activeIcon: ImageConstant.home, type: BottomBarEnum.home),
+          BottomMenuModel(icon: ImageConstant.manage, activeIcon: ImageConstant.manage, type: BottomBarEnum.manage),
+          BottomMenuModel(icon: ImageConstant.post, activeIcon: ImageConstant.post, type: BottomBarEnum.post),
+          BottomMenuModel(icon: ImageConstant.user, activeIcon: ImageConstant.user, type: BottomBarEnum.user),
+        ];
       case '/my_cart_screen':
         return [
           BottomMenuModel(icon: ImageConstant.home2, activeIcon: ImageConstant.home2, type: BottomBarEnum.home2),
@@ -45,15 +57,11 @@ class CustomBottomBarState extends State<CustomBottomBar> {
           BottomMenuModel(icon: ImageConstant.post4, activeIcon: ImageConstant.post4, type: BottomBarEnum.post4),
           BottomMenuModel(icon: ImageConstant.user4, activeIcon: ImageConstant.user4, type: BottomBarEnum.user4),
         ];
-      default:
-        return [
-          BottomMenuModel(icon: ImageConstant.imgImage7, activeIcon: ImageConstant.imgImage7, type: BottomBarEnum.Image7),
-          BottomMenuModel(icon: ImageConstant.imgImage9, activeIcon: ImageConstant.imgImage9, type: BottomBarEnum.Image9),
-          BottomMenuModel(icon: ImageConstant.imgImage10, activeIcon: ImageConstant.imgImage10, type: BottomBarEnum.Image10),
-          BottomMenuModel(icon: ImageConstant.imgImage8, activeIcon: ImageConstant.imgImage8, type: BottomBarEnum.Image8),
-        ];
     }
+
+    return []; // Nếu route không khớp với bất kỳ case nào, trả về danh sách rỗng
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -123,29 +131,33 @@ class CustomBottomBarState extends State<CustomBottomBar> {
 
   String getRouteForType(BottomBarEnum type) {
     switch (type) {
-      case BottomBarEnum.Image8:
+      case BottomBarEnum.Image88:
       case BottomBarEnum.user2:
       case BottomBarEnum.user3:
       case BottomBarEnum.user4:
+      case BottomBarEnum.user:
         return '/personal_screen';
 
-      case BottomBarEnum.Image10:
+      case BottomBarEnum.Image100:
+      case BottomBarEnum.post:
       case BottomBarEnum.post2:
       case BottomBarEnum.post3:
       case BottomBarEnum.post4:
         return '/post_screen';
 
-      case BottomBarEnum.Image9:
+      case BottomBarEnum.Image99:
       case BottomBarEnum.manage2:
+      case BottomBarEnum.manage:
       case BottomBarEnum.manage3:
       case BottomBarEnum.manage4:
         return '/my_cart_screen';
 
-      case BottomBarEnum.Image7:
+      case BottomBarEnum.Image77:
+      case BottomBarEnum.home:
       case BottomBarEnum.home2:
       case BottomBarEnum.home3:
       case BottomBarEnum.home4:
-        return '/product_card_screen';
+        return '/homepage_screen';
 
       default:
         return '';

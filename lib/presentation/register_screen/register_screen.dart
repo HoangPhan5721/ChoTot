@@ -9,12 +9,13 @@ import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_text_form_field.dart';
 import 'bloc/register_bloc.dart';
 import 'models/register_model.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({Key? key})
       : super(
-          key: key,
-        );
+    key: key,
+  );
 
   static Widget builder(BuildContext context) {
     return BlocProvider<RegisterBloc>(
@@ -137,7 +138,7 @@ class RegisterScreen extends StatelessWidget {
         builder: (context, fullNameInputController) {
           return CustomTextFormField(
             controller: fullNameInputController,
-            hintText: "lbl_full_name".tr,
+            hintText: "lbl_phone".tr,
             prefix: Container(
               margin: EdgeInsets.fromLTRB(18.h, 16.h, 14.h, 16.h),
               child: CustomImageView(
@@ -255,6 +256,33 @@ class RegisterScreen extends StatelessWidget {
       ),
     );
   }
+  Future<Map<String, dynamic>> _registerUser(String email, String password, String phone) async {
+    final url = Uri.parse("https://nodejs-cgor.onrender.com/api/signup");
+    final headers = {"Content-Type": "application/json"};
+    final body = jsonEncode({
+      "email": email,
+      "phone": phone,
+      "password": password,
+    });
+
+    print("Sending request to: $url");
+    print("Request Headers: $headers");
+    print("Request Body: $body");
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      print("Response Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+
+      final data = jsonDecode(response.body);
+      return data;
+    } catch (e) {
+      print("Error: $e");
+      return {"status": 500, "message": "Something went wrong"};
+    }
+  }
+
 
   /// Section Widget
   Widget _buildSignUpButton(BuildContext context) {
@@ -264,6 +292,32 @@ class RegisterScreen extends StatelessWidget {
       margin: EdgeInsets.only(left: 2.h),
       buttonStyle: CustomButtonStyles.fillPrimary,
       buttonTextStyle: theme.textTheme.titleLarge!,
+      onPressed: () async {
+        final registerBloc = context.read<RegisterBloc>();
+        final email = registerBloc.state.emailInputController?.text.trim() ?? "";
+        final password = registerBloc.state.passwordInputController?.text.trim() ?? "";
+        final phone = registerBloc.state.fullNameInputController?.text.trim() ?? "";
+
+        if (email.isEmpty || password.isEmpty || phone.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Please fill all fields!")),
+          );
+          return;
+        }
+
+        final response = await _registerUser(email, password, phone);
+        if (response['status'] == 201) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response['message'])),
+          );
+          Navigator.pushNamed(context, '/login_screen'); // Navigate to login screen
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Registration failed! Try again.")),
+          );
+        }
+      },
     );
   }
+
 }

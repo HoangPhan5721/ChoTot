@@ -18,10 +18,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       ) async {
     emit(
       state.copyWith(
-          fullNameInputController: TextEditingController(),
-          emailInputController: TextEditingController(),
-      passwordInputController: TextEditingController(),
-      confirmPasswordInputController: TextEditingController(),
-    ),);
+        fullNameInputController: TextEditingController(),
+        emailInputController: TextEditingController(),
+        passwordInputController: TextEditingController(),
+        confirmPasswordInputController: TextEditingController(),
+      ),);
   }
 }

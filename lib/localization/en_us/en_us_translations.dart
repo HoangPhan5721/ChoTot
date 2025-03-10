@@ -2,6 +2,7 @@ final Map<String, String> enUs = {
   "lbl_welcome" : "ChoRat",
   "lbl_plants" : "Tot",
   "lbl_full_name" : "Full Name",
+  "lbl_phone" : "Phone Number",
   "lbl_password" : "Password",
   "lbl_login" : "Login In",
   "lbl_sign_up" : "Sign Up",
