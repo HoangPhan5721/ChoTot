@@ -1,33 +1,48 @@
+import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'homepage_event.dart';
 import 'homepage_state.dart';
 import 'package:intern/presentation/home_page_screen/models/homepage_model.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   HomePageBloc() : super(HomePageInitial()) {
-    // Đăng ký sự kiện với `on<LoadProductList>`
     on<LoadProductList>(_onLoadProductList);
   }
 
-  // Phương thức xử lý sự kiện `LoadProductList`
   Future<void> _onLoadProductList(
       LoadProductList event, Emitter<HomePageState> emit) async {
-    emit(HomePageLoading());  // Trạng thái khi dữ liệu đang được tải
+    emit(HomePageLoading());
     try {
-      // Giả lập việc lấy danh sách sản phẩm
       List<Product> productList = await fetchProductList();
-      emit(HomePageLoaded(productList: productList)); // Trả về sản phẩm sau khi tải thành công
+      emit(HomePageLoaded(productList: productList));
     } catch (e) {
-      emit(HomePageError(message: 'Lỗi khi tải sản phẩm')); // Trạng thái lỗi khi có sự cố
+      emit(HomePageError(message: 'Lỗi khi tải sản phẩm: ${e.toString()}'));
     }
   }
 
-  // Giả lập hàm tải danh sách sản phẩm (thay thế bằng API thật)
   Future<List<Product>> fetchProductList() async {
-    return [
-      Product(name: 'Sofa', price: 10000000, imageUrl: 'https://kika.vn/wp-content/uploads/2022/11/sofa-sf217-anh-thuc-te.jpg'),
-      Product(name: 'Bàn ăn', price: 4000000, imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-FJ0G040jLplwh8CZYhmCuDhQd_MMh1a_FA&s'),
-      // Thêm các sản phẩm khác nếu cần
-    ];
+    final response = await http.get(
+        Uri.parse('https://nodejs-cgor.onrender.com/api/posts/all'));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['success'] == true) {
+        List<Product> products = (data['data']['data'] as List)
+            .map((item) => Product(
+                  name: item['title'],
+                  price: double.parse(item['price']),
+                  imageUrl: item['images'].isNotEmpty
+                      ? item['images'][0]['image_url']
+                      : '',
+                ))
+            .toList();
+        return products;
+      } else {
+        throw Exception('Lỗi từ API: ${data['message']}');
+      }
+    } else {
+      throw Exception('Lỗi khi tải dữ liệu: ${response.statusCode}');
+    }
   }
 }
