@@ -9,20 +9,17 @@ import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_text_form_field.dart';
 import 'bloc/register_bloc.dart';
 import 'models/register_model.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({Key? key})
-      : super(
-    key: key,
-  );
+  final _formKey = GlobalKey<FormState>(); // Form key for validation
+
+  RegisterScreen({Key? key}) : super(key: key);
 
   static Widget builder(BuildContext context) {
     return BlocProvider<RegisterBloc>(
       create: (context) => RegisterBloc(RegisterState(
         registerModelObj: RegisterModel(),
-      ))
-        ..add(RegisterInitialEvent()),
+      ))..add(RegisterInitialEvent()),
       child: RegisterScreen(),
     );
   }
@@ -31,79 +28,54 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: theme.colorScheme.primaryContainer,
-      // appBar: _buildAppBar(context),
       body: SafeArea(
         top: false,
         child: SizedBox(
           width: double.maxFinite,
           child: SingleChildScrollView(
-            child: Container(
-              width: double.maxFinite,
-              padding: EdgeInsets.only(
-                left: 26.h,
-                top: 30.h,
-                right: 26.h,
-              ),
-              child: Column(
-                children: [
-                  SizedBox(height: 46.h),
-                  Text(
-                    "lbl_register".tr,
-                    style: CustomTextStyles.displayMediumInterOnPrimary,
-                  ),
-                  Text(
-                    "msg_create_your_new".tr,
-                    style: CustomTextStyles.titleLargeInterGray50003,
-                  ),
-                  SizedBox(height: 24.h),
-                  _buildFullNameInput(context),
-                  SizedBox(height: 22.h),
-                  _buildEmailInput(context),
-                  SizedBox(height: 22.h),
-                  _buildPasswordInput(context),
-                  SizedBox(height: 22.h),
-                  _buildConfirmPasswordInput(context),
-                  SizedBox(height: 24.h),
-                  Text(
-                    "msg_by_signing_you_agree".tr,
-                    style: CustomTextStyles.titleSmallGray500,
-                  ),
-                  Text(
-                    "msg_and_privacy_notice".tr,
-                    style: CustomTextStyles.titleSmallGreen300,
-                  ),
-                  SizedBox(height: 142.h),
-                  _buildSignUpButton(context),
-                  SizedBox(height: 18.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "msg_already_have_an".tr,
-                        style: CustomTextStyles.labelLargeGray50002,
-                      ),
-                      // Text(
-                      //   "lbl_login".tr,
-                      //   style: CustomTextStyles.labelLargePrimary.copyWith(
-                      //     decoration: TextDecoration.underline,
-                      //   ),
-                      // )
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/login_screen');
-                        },
-                        child: Text(
-                          "lbl_login".tr,
-                          style: CustomTextStyles.labelLargePrimary.copyWith(
-                            decoration: TextDecoration.underline,
+            child: Form(
+              key: _formKey,
+              child: Container(
+                width: double.maxFinite,
+                padding: EdgeInsets.only(left: 26.h, top: 30.h, right: 26.h),
+                child: Column(
+                  children: [
+                    SizedBox(height: 46.h),
+                    Text("lbl_register".tr, style: CustomTextStyles.displayMediumInterOnPrimary),
+                    Text("msg_create_your_new".tr, style: CustomTextStyles.titleLargeInterGray50003),
+                    SizedBox(height: 24.h),
+                    _buildPhoneInput(context),
+                    SizedBox(height: 22.h),
+                    _buildEmailInput(context),
+                    SizedBox(height: 22.h),
+                    _buildPasswordInput(context),
+                    SizedBox(height: 22.h),
+                    _buildConfirmPasswordInput(context),
+                    SizedBox(height: 24.h),
+                    Text("msg_by_signing_you_agree".tr, style: CustomTextStyles.titleSmallGray500),
+                    Text("msg_and_privacy_notice".tr, style: CustomTextStyles.titleSmallGray500),
+                    SizedBox(height: 142.h),
+                    _buildSignUpButton(context),
+                    SizedBox(height: 18.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("msg_already_have_an".tr, style: CustomTextStyles.labelLargeGray50002),
+                        GestureDetector(
+                          onTap: () => Navigator.pushNamed(context, '/login_screen'),
+                          child: Text(
+                            "lbl_login".tr,
+                            style: CustomTextStyles.labelLargePrimary.copyWith(
+                              decoration: TextDecoration.underline,
+                              color: Color(0xFF0047AB),
+                            ),
                           ),
                         ),
-                      ),
-
-                    ],
-                  )
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -112,25 +84,8 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-  /// Section Widget
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return CustomAppBar(
-      leadingWidth: 76.h,
-      leading: AppbarLeadingIconbuttonOne(
-        imagePath: ImageConstant.imgArrowLeft,
-        height: 40.h,
-        width: 40.h,
-        margin: EdgeInsets.only(
-          left: 36.h,
-          top: 7.h,
-          bottom: 8.h,
-        ),
-      ),
-    );
-  }
-
-  /// Section Widget
-  Widget _buildFullNameInput(BuildContext context) {
+  /// Section Widget: Phone Input
+  Widget _buildPhoneInput(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 4.h),
       child: BlocSelector<RegisterBloc, RegisterState, TextEditingController?>(
@@ -148,20 +103,26 @@ class RegisterScreen extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
             ),
-            prefixConstraints: BoxConstraints(
-              maxHeight: 58.h,
-            ),
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 18.h,
-              vertical: 16.h,
-            ),
+            prefixConstraints: BoxConstraints(maxHeight: 58.h),
+            contentPadding: EdgeInsets.symmetric(horizontal: 18.h, vertical: 16.h),
+            borderDecoration: TextFormFieldStyleHelper.fillGray,
+            fillColor: Colors.white,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Số điện thoại không được để trống";
+              }
+              if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                return "Vui lòng nhập số điện thoại 10 chữ số hợp lệ";
+              }
+              return null;
+            },
           );
         },
       ),
     );
   }
 
-  /// Section Widget
+  /// Section Widget: Email Input
   Widget _buildEmailInput(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 4.h),
@@ -180,17 +141,26 @@ class RegisterScreen extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
             ),
-            prefixConstraints: BoxConstraints(
-              maxHeight: 56.h,
-            ),
+            prefixConstraints: BoxConstraints(maxHeight: 56.h),
             contentPadding: EdgeInsets.fromLTRB(18.h, 16.h, 12.h, 16.h),
+            borderDecoration: TextFormFieldStyleHelper.fillGray,
+            fillColor: Colors.white,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Email không được để trống";
+              }
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                return "Vui lòng nhập địa chỉ email hợp lệ";
+              }
+              return null;
+            },
           );
         },
       ),
     );
   }
 
-  /// Section Widget
+  /// Section Widget: Password Input
   Widget _buildPasswordInput(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 4.h),
@@ -200,6 +170,7 @@ class RegisterScreen extends StatelessWidget {
           return CustomTextFormField(
             controller: passwordInputController,
             hintText: "lbl_password".tr,
+            textInputAction: TextInputAction.next,
             prefix: Container(
               margin: EdgeInsets.fromLTRB(18.h, 16.h, 14.h, 16.h),
               child: CustomImageView(
@@ -209,27 +180,38 @@ class RegisterScreen extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
             ),
-            prefixConstraints: BoxConstraints(
-              maxHeight: 58.h,
-            ),
+            prefixConstraints: BoxConstraints(maxHeight: 58.h),
             obscureText: true,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 18.h,
-              vertical: 16.h,
-            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 18.h, vertical: 16.h),
+            borderDecoration: TextFormFieldStyleHelper.fillGray,
+            fillColor: Colors.white,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Mật khẩu không được để trống";
+              }
+              if (value.length < 8) {
+                return "Mật khẩu phải dài ít nhất 8 ký tự";
+              }
+              if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d).+$').hasMatch(value)) {
+                return "Mật khẩu phải chứa cả chữ cái và số";
+              }
+              return null;
+            },
           );
         },
       ),
     );
   }
 
-  /// Section Widget
+  /// Section Widget: Confirm Password Input
   Widget _buildConfirmPasswordInput(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 4.h),
       child: BlocSelector<RegisterBloc, RegisterState, TextEditingController?>(
         selector: (state) => state.confirmPasswordInputController,
         builder: (context, confirmPasswordInputController) {
+          final passwordController = context.read<RegisterBloc>().state.passwordInputController;
+
           return CustomTextFormField(
             controller: confirmPasswordInputController,
             hintText: "msg_confirm_password".tr,
@@ -243,81 +225,77 @@ class RegisterScreen extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
             ),
-            prefixConstraints: BoxConstraints(
-              maxHeight: 58.h,
-            ),
+            prefixConstraints: BoxConstraints(maxHeight: 58.h),
             obscureText: true,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 18.h,
-              vertical: 16.h,
-            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 18.h, vertical: 16.h),
+            borderDecoration: TextFormFieldStyleHelper.fillGray,
+            fillColor: Colors.white,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Xác nhận mật khẩu không được để trống";
+              }
+              if (value != passwordController?.text) {
+                return "Mật khẩu không khớp";
+              }
+              return null;
+            },
           );
         },
       ),
     );
   }
-  Future<Map<String, dynamic>> _registerUser(String email, String password, String phone) async {
-    final url = Uri.parse("https://nodejs-cgor.onrender.com/api/signup");
-    final headers = {"Content-Type": "application/json"};
-    final body = jsonEncode({
-      "email": email,
-      "phone": phone,
-      "password": password,
-    });
 
-    print("Sending request to: $url");
-    print("Request Headers: $headers");
-    print("Request Body: $body");
-
-    try {
-      final response = await http.post(url, headers: headers, body: body);
-
-      print("Response Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
-
-      final data = jsonDecode(response.body);
-      return data;
-    } catch (e) {
-      print("Error: $e");
-      return {"status": 500, "message": "Something went wrong"};
-    }
-  }
-
-
-  /// Section Widget
+  /// Section Widget: Sign-Up Button with Loading Indicator
+  /// Section Widget: Sign-Up Button with Loading Indicator
+  /// Section Widget: Sign-Up Button with Loading Indicator
   Widget _buildSignUpButton(BuildContext context) {
-    return CustomElevatedButton(
-      height: 56.h,
-      text: "lbl_sign_up".tr,
-      margin: EdgeInsets.only(left: 2.h),
-      buttonStyle: CustomButtonStyles.fillPrimary,
-      buttonTextStyle: theme.textTheme.titleLarge!,
-      onPressed: () async {
-        final registerBloc = context.read<RegisterBloc>();
-        final email = registerBloc.state.emailInputController?.text.trim() ?? "";
-        final password = registerBloc.state.passwordInputController?.text.trim() ?? "";
-        final phone = registerBloc.state.fullNameInputController?.text.trim() ?? "";
-
-        if (email.isEmpty || password.isEmpty || phone.isEmpty) {
+    return BlocConsumer<RegisterBloc, RegisterState>(
+      listener: (context, state) {
+        print("Listener: isLoading=${state.isLoading}, isSuccess=${state.isSuccess}, errorMessage=${state.errorMessage}");
+        if (state.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Please fill all fields!")),
+            SnackBar(content: Text("Đăng ký thành công!")),
           );
-          return;
-        }
-
-        final response = await _registerUser(email, password, phone);
-        if (response['status'] == 201) {
+          Navigator.pushReplacementNamed(context, '/login_screen');
+        } else if (state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response['message'])),
-          );
-          Navigator.pushNamed(context, '/login_screen'); // Navigate to login screen
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Registration failed! Try again.")),
+            SnackBar(content: Text(state.errorMessage!)),
           );
         }
       },
+      builder: (context, state) {
+        return CustomElevatedButton(
+          height: 56.h,
+          text: "lbl_sign_up".tr,
+          margin: EdgeInsets.only(left: 2.h),
+          buttonStyle: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF0047AB),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          ),
+          buttonTextStyle: theme.textTheme.titleLarge!.copyWith(color: Colors.white),
+          child: state.isLoading
+              ? SizedBox(
+            height: 24.h,
+            width: 24.h,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 3.0,
+            ),
+          )
+              : null,
+          onPressed: state.isLoading
+              ? null
+              : () {
+            if (_formKey.currentState!.validate()) {
+              final registerBloc = context.read<RegisterBloc>();
+              final email = registerBloc.state.emailInputController?.text.trim() ?? "";
+              final password = registerBloc.state.passwordInputController?.text.trim() ?? "";
+              final phone = registerBloc.state.fullNameInputController?.text.trim() ?? "";
+              registerBloc.add(RegisterSubmitEvent(email, password, phone));
+            }
+          },
+        );
+      },
     );
   }
-
 }

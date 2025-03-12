@@ -11,7 +11,7 @@ class CustomElevatedButton extends BaseButton {
     this.rightIcon,
     EdgeInsets? margin,
     VoidCallback? onPressed,
-    this.routeName, // New parameter for navigation
+    this.routeName,
     ButtonStyle? buttonStyle,
     Alignment? alignment,
     TextStyle? buttonTextStyle,
@@ -19,6 +19,7 @@ class CustomElevatedButton extends BaseButton {
     double? height,
     double? width,
     required String text,
+    this.child, // Add child parameter
   }) : super(
     text: text,
     onPressed: onPressed,
@@ -34,7 +35,8 @@ class CustomElevatedButton extends BaseButton {
   final BoxDecoration? decoration;
   final Widget? leftIcon;
   final Widget? rightIcon;
-  final String? routeName; // Holds the route to navigate to
+  final String? routeName;
+  final Widget? child; // Store child widget
 
   @override
   Widget build(BuildContext context) {
@@ -61,19 +63,20 @@ class CustomElevatedButton extends BaseButton {
               Navigator.pushNamed(context, routeName!);
             }
           },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          leftIcon ?? const SizedBox.shrink(),
-          Text(
-            text,
-            style: buttonTextStyle ??
-                CustomTextStyles.titleMediumLightgreen900,
+      child: child ?? // Use child if provided, otherwise default to text
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              leftIcon ?? const SizedBox.shrink(),
+              Text(
+                text,
+                style: buttonTextStyle ??
+                    CustomTextStyles.titleMediumLightgreen900,
+              ),
+              rightIcon ?? const SizedBox.shrink(),
+            ],
           ),
-          rightIcon ?? const SizedBox.shrink(),
-        ],
-      ),
     ),
   );
 }

@@ -91,6 +91,7 @@ class CustomImageView extends StatelessWidget {
 
   Widget _buildImageView() {
     if (imagePath != null) {
+      print('Image path: $imagePath, Type: ${imagePath!.imageType}');
       switch (imagePath!.imageType) {
         case ImageType.svg:
           return Container(
@@ -130,12 +131,15 @@ class CustomImageView extends StatelessWidget {
                 backgroundColor: Colors.grey.shade100,
               ),
             ),
-            errorWidget: (context, url, error) => Image.asset(
-              placeHolder,
-              height: height,
-              width: width,
-              fit: fit ?? BoxFit.cover,
-            ),
+            errorWidget: (context, url, error) {
+              print('Failed to load network image: $imagePath, Error: $error');
+              return Image.asset(
+                placeHolder,
+                height: height,
+                width: width,
+                fit: fit ?? BoxFit.cover,
+              );
+            },
           );
         case ImageType.png:
         default:

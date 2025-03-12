@@ -1,141 +1,115 @@
 import 'package:flutter/material.dart';
 import 'package:intern/widgets/custom_image_view.dart';
 import '../../../core/app_export.dart';
-import '../../../theme/custom_button_style.dart';
-import '../../../widgets/custom_elevated_button.dart';
 import '../models/cartitemlist_item_model.dart';
 
 // ignore_for_file: must_be_immutable
 class CartitemslistItemWidget extends StatelessWidget {
   CartitemslistItemWidget(this.cartitemslistItemModelObj, {Key? key})
-      : super(
-          key: key,
-        );
+      : super(key: key);
+
   CartitemslistItemModel cartitemslistItemModelObj;
+
+  // Format price (limit to 5 digits & add commas)
+  String formatPrice(String? price) {
+    if (price == null) return "N/A";
+    try {
+      final number = double.parse(price);
+      final formattedNumber = number.toStringAsFixed(0);
+
+      // Keep first 5 digits
+      String shortened = formattedNumber.length > 5
+          ? formattedNumber.substring(0, 5)
+          : formattedNumber;
+
+      // Add commas for readability
+      return "${shortened.replaceAllMapped(
+        RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+            (Match m) => '${m[1]},',
+      )} VND";
+    } catch (e) {
+      return price;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 24.h,
-        vertical: 8.h,
-      ),
-      decoration: AppDecoration.outlineBlack9001.copyWith(
-        borderRadius: BorderRadiusStyle.roundedBorder10,
+      margin: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.h),
+      padding: EdgeInsets.all(14.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14.h),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 6.h,
+            offset: Offset(0, 4.h),
+          ),
+        ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CustomImageView(
-            imagePath: cartitemslistItemModelObj.aloeVeraOne!,
-            height: 66.h,
-            width: 66.h,
-            radius: BorderRadius.circular(
-              5.h,
+          // Product Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10.h),
+            child: CustomImageView(
+              imagePath: cartitemslistItemModelObj.image,
+              height: 70.h,
+              width: 70.h,
+              fit: BoxFit.cover,
             ),
           ),
+          SizedBox(width: 12.h),
+          // Item Details
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Product Title
                 Text(
-                  cartitemslistItemModelObj.aloevera!,
-                  style: theme.textTheme.headlineSmall,
-                ),
-                Text(
-                  cartitemslistItemModelObj.loremipsum!,
-                  style: CustomTextStyles.titleSmallGray50004,
-                ),
-                SizedBox(height: 4.h),
-                SizedBox(
-                  width: double.maxFinite,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        height: 20.h,
-                        width: 20.h,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Text(
-                              cartitemslistItemModelObj.tf!,
-                              style: theme.textTheme.titleSmall,
-                            ),
-                            Container(
-                              height: 20.h,
-                              width: 20.h,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                  5.h,
-                                ),
-                                border: Border.all(
-                                  color: appTheme.lightGreen900,
-                                  width: 1.h,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 12.h),
-                        child: Text(
-                          cartitemslistItemModelObj.one!,
-                          style: theme.textTheme.titleSmall,
-                        ),
-                      ),
-                      Container(
-                        height: 20.h,
-                        width: 20.h,
-                        margin: EdgeInsets.only(left: 12.h),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 4.h),
-                                child: Text(
-                                  cartitemslistItemModelObj.one1!,
-                                  style: theme.textTheme.titleSmall,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: 20.h,
-                              width: 20.h,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                  5.h,
-                                ),
-                                border: Border.all(
-                                  color: appTheme.lightGreen900,
-                                  width: 1.h,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
+                  cartitemslistItemModelObj.title ?? 'No title',
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16.h,
                   ),
-                )
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 6.h),
+                // Location with Icon
+                Row(
+                  children: [
+                    Icon(Icons.location_on, size: 16.h, color: Colors.grey),
+                    SizedBox(width: 4.h),
+                    Expanded(
+                      child: Text(
+                        cartitemslistItemModelObj.location ?? 'No location',
+                        style: CustomTextStyles.titleSmallGray50004?.copyWith(
+                          fontSize: 14.h,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.h),
+                // Price Label
+                Text(
+                  formatPrice(cartitemslistItemModelObj.price),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: appTheme.blueBackground,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17.h,
+                  ),
+                ),
               ],
             ),
           ),
-          _buildAloeVeraPriceButton(context)
         ],
       ),
-    );
-  }
-
-  /// Section Widget
-  Widget _buildAloeVeraPriceButton(BuildContext context) {
-    return CustomElevatedButton(
-      width: 66.h,
-      text: "lbl_20".tr,
-      margin: EdgeInsets.only(bottom: 16.h),
-      alignment: Alignment.bottomCenter,
     );
   }
 }

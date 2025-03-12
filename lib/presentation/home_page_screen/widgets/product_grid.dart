@@ -43,7 +43,19 @@ class ProductCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(product.imageUrl, fit: BoxFit.cover),
+          product.imageUrl.isNotEmpty
+              ? Image.network(
+            product.imageUrl,
+            fit: BoxFit.cover,
+            height: 120, // Set a fixed height
+            width: double.infinity,
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(Icons.image_not_supported,
+                  size: 50, color: Colors.grey);
+            },
+          )
+              : const Icon(Icons.image_not_supported,
+              size: 50, color: Colors.grey), // Fallback icon
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold)),

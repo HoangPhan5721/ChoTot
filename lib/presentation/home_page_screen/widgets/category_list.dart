@@ -36,7 +36,7 @@ class CategoryItem extends StatelessWidget {
       width: 100, // Điều chỉnh chiều rộng của mỗi mục
       padding: EdgeInsets.symmetric(horizontal: 8.0), // Khoảng cách giữa các mục
       child: Column(
-        
+
         crossAxisAlignment: CrossAxisAlignment.center, // Căn giữa theo chiều ngang
         children: [
           // Đảm bảo icon luôn ở trên cùng và căn giữa

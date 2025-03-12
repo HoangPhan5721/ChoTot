@@ -5,14 +5,18 @@ import 'cartitemlist_item_model.dart';
 /// and is typically used to hold data that is passed between different parts of the application
 // ignore_for_file: must_be_immutable
 class MyCartModel extends Equatable {
+  final List<CartitemslistItemModel>? cartitemslistItemList;
+
   MyCartModel({this.cartitemslistItemList = const []});
-  List<CartitemslistItemModel> cartitemslistItemList;
-  MyCartModel copyWith({List<CartitemslistItemModel>? cartitemslistItemList}) {
+
+  MyCartModel copyWith({
+    List<CartitemslistItemModel>? cartitemslistItemList,
+  }) {
     return MyCartModel(
-      cartitemslistItemList:
-      cartitemslistItemList ?? this.cartitemslistItemList,
+      cartitemslistItemList: cartitemslistItemList ?? this.cartitemslistItemList,
     );
   }
+
   @override
   List<Object?> get props => [cartitemslistItemList];
 }

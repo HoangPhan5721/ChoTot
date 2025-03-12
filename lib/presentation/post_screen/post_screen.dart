@@ -9,32 +9,117 @@ import '../../widgets/app_bar/appbar_trailing_image.dart';
 import '../../widgets/app_bar/custom_app_bar.dart';
 import '../../widgets/custom_bottom_bar.dart';
 import '../../widgets/custom_elevated_button.dart';
-import '../../widgets/custom_outlined_button.dart';
 import '../../widgets/custom_text_form_field.dart';
 import 'bloc/post_bloc.dart';
+import '../post_screen/category_widget.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
+import 'package:intern/presentation/post_screen/models/post_model.dart';
 
-import 'models/post_model.dart';
+enum ItemCondition { newItem, usedItem }
 
-// ignore_for_file: must_be_immutable
-class PostScreen extends StatelessWidget {
-  PostScreen({Key? key})
-      : super(
-          key: key,
-        );
-  GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+class PostScreen extends StatefulWidget {
+  final int? userId;
+
+  const PostScreen({Key? key, this.userId}) : super(key: key);
 
   static Widget builder(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final int? userId = args?['userId'] as int?;
     return BlocProvider<PostBloc>(
-      create: (context) => PostBloc(PostState(
-        PostModelObj: PostModel(),
-      ))
-        ..add(PostInitialEvent()),
-      child: PostScreen(),
+      create: (context) => PostBloc()..add(PostInitialEvent()),
+      child: PostScreen(userId: userId),
     );
   }
 
   @override
+  _PostScreenState createState() => _PostScreenState();
+}
+
+class _PostScreenState extends State<PostScreen> {
+  ItemCondition? _condition = ItemCondition.newItem;
+
+  Future<void> _submitPost(BuildContext context) async {
+    final state = context.read<PostBloc>().state;
+
+    // Validate required fields
+    // if (widget.userId == null ||
+    //     state.selectedCategoryId == null ||
+    //     (state.titleController == null || state.titleController!.text.isEmpty) ||
+    //     (state.productNameController == null || state.productNameController!.text.isEmpty) ||
+    //     (state.descriptionController == null || state.descriptionController!.text.isEmpty) ||
+    //     (state.priceController == null || state.priceController!.text.isEmpty) ||
+    //     (state.locationController == null || state.locationController!.text.isEmpty)) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text('Please fill all required fields')),
+    //   );
+    //   return;
+    // }
+
+    // Prepare form data
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('https://nodejs-cgor.onrender.com/api/posts'),
+    );
+
+    request.fields['user_id'] = widget.userId.toString();
+    request.fields['category_id'] = state.selectedCategoryId.toString();
+    request.fields['title'] = state.titleController!.text;
+    request.fields['product_name'] = state.productNameController!.text;
+    request.fields['description'] = state.descriptionController!.text;
+    request.fields['price'] = state.priceController!.text;
+    request.fields['location'] = state.locationController!.text;
+    request.fields['product_status'] = _condition == ItemCondition.newItem ? 'Mới' : 'Đã qua sử dụng';
+
+    if (state.imageFile != null) {
+      request.files.add(await http.MultipartFile.fromPath('images', state.imageFile!.path));
+    }
+
+    // Print the data being sent to the API
+    print('Posting to API:');
+    print('URL: ${request.url}');
+    print('Fields: ${request.fields}');
+    if (state.imageFile != null) {
+      print('Image file path: ${state.imageFile!.path}');
+    } else {
+      print('No image file included');
+    }
+
+    try {
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+      print('API Response:');
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: $responseBody');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Show success notification
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Post created successfully!'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+        // Navigate to /homepage_screen instead of popping
+        Navigator.pushReplacementNamed(context, '/homepage_screen');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to create post: $responseBody')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print("UserID in PostScreen: ${widget.userId}");
     return Scaffold(
       backgroundColor: theme.colorScheme.primaryContainer,
       appBar: _buildAppBar(context),
@@ -52,197 +137,87 @@ class PostScreen extends StatelessWidget {
                   SizedBox(height: 74.h),
                   _buildTitleInputSection(context),
                   SizedBox(height: 32.h),
-                  _buildPassword(context),
+                  _buildCategory(context),
                   SizedBox(height: 32.h),
                   _buildProductName(context),
                   SizedBox(height: 32.h),
+                  _buildImageUploadSection(context),
+                  SizedBox(height: 32.h),
                   _buildDescription(context),
                   SizedBox(height: 32.h),
-                  // _buildErrorMessageSection(context),
-                  // SizedBox(height: 32.h),
                   _buildPriceInputSection(context),
                   SizedBox(height: 32.h),
                   _buildLocationInputSection(context),
                   SizedBox(height: 32.h),
-                  Padding(
-                    padding: EdgeInsets.only(left: 6.h),
-                    child: Text(
-                      "lbl_product_status".tr,
-                      style: theme.textTheme.labelLarge,
-                    ),
-                  ),
+                  _buildConditionRadios(context),
                   SizedBox(height: 32.h),
-                  _buildUsedRadioButton(context),
-                  SizedBox(height: 32.h),
-                  _buildNewRadioButton(context),
-                  SizedBox(height: 54.h),
-                  _buildCtaButtons(context)
+                  _buildCtaButtons(context),
                 ],
               ),
             ),
           ),
         ),
       ),
-      bottomNavigationBar: SizedBox(
-        width: double.maxFinite,
-        child: _buildBottomBar(context),
-      ),
+      bottomNavigationBar: _buildBottomBar(context),
     );
   }
 
-  /// Section Widget
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar(
       leadingWidth: 67.h,
       leading: AppbarLeadingIconbutton(
         imagePath: ImageConstant.imgArrowLeft,
-        margin: EdgeInsets.only(
-          left: 37.h,
-          top: 14.h,
-          bottom: 11.h,
-        ),
+        margin: EdgeInsets.only(left: 37.h, top: 14.h, bottom: 11.h),
+        onTap: () => Navigator.pop(context),
       ),
       centerTitle: true,
-      title: AppbarTitle(
-        text: "lbl_post".tr,
-      ),
+      title: AppbarTitle(text: "lbl_post".tr),
       actions: [
         AppbarTrailingImage(
           imagePath: ImageConstant.imgMoreVertical,
           margin: EdgeInsets.only(right: 25.h),
-        )
+        ),
       ],
     );
   }
 
-  /// Section Widget
-  Widget _buildInputfieldone(BuildContext context) {
-    return BlocSelector<PostBloc, PostState, TextEditingController?>(
-      selector: (state) => state.inputfieldoneController,
-      builder: (context, inputfieldoneController) {
-        return CustomTextFormField(
-          controller: inputfieldoneController,
-          hintText: "lbl_enter_title".tr,
-          contentPadding: EdgeInsets.all(16.h),
-          borderDecoration: TextFormFieldStyleHelper.getOutlineBlueGray,
-          fillcolor: theme.colorScheme.primaryContainer,
-        );
-      },
-    );
-  }
-
-  /// Section Widget
   Widget _buildTitleInputSection(BuildContext context) {
     return Container(
       width: double.maxFinite,
       margin: EdgeInsets.only(left: 6.h),
       child: Column(
-
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "lbl_title".tr,
-            style: theme.textTheme.labelLarge,
+          Text("lbl_title".tr, style: theme.textTheme.labelLarge),
+          SizedBox(height: 8.h),
+          BlocSelector<PostBloc, PostState, TextEditingController?>(
+            selector: (state) => state.titleController,
+            builder: (context, titleController) {
+              return CustomTextFormField(
+                controller: titleController,
+                hintText: "lbl_enter_title".tr,
+                contentPadding: EdgeInsets.all(16.h),
+                borderDecoration: TextFormFieldStyleHelper.getOutlineBlueGray,
+                fillColor: theme.colorScheme.primaryContainer,
+                onChanged: (value) {
+                  context.read<PostBloc>().add(TitleChangedEvent(value));
+                },
+              );
+            },
           ),
-          SizedBox(height: 8),
-          _buildInputfieldone(context)
         ],
       ),
     );
   }
-  // Widget _buildProductStatusSection(BuildContext context) {
-  //   int status = 0; // 0: Used, 1: New
-  //   return Container(
-  //     width: double.maxFinite,
-  //     margin: EdgeInsets.only(left: 6.h),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Text(
-  //           "lbl_product_status".tr,
-  //           style: Theme.of(context).textTheme.labelLarge,
-  //         ),
-  //         SizedBox(height: 8),
-  //         Row(
-  //           children: [
-  //             Radio<int>(
-  //               value: 1,
-  //               groupValue: status,
-  //               onChanged: (int? value) {
-  //                 setState(() {
-  //                   status = value!;
-  //                 });
-  //               },
-  //             ),
-  //             Text("Used"),
-  //             SizedBox(width: 16),
-  //             Radio<int>(
-  //               value: 0,
-  //               groupValue: status,
-  //               onChanged: (int? value) {
-  //                 setState(() {
-  //                   status = value!;
-  //                 });
-  //               },
-  //             ),
-  //             Text("New"),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-  /// Section Widget
-  Widget _buildCategoryInputSection(BuildContext context) {
-    return BlocSelector<PostBloc, PostState, TextEditingController?>(
-      selector: (state) => state.categoryInputSectionController,
-      builder: (context, categoryInputSectionController) {
-        return CustomTextFormField(
-          controller: categoryInputSectionController,
-          hintText: "lbl_enter_category".tr,
-          contentPadding: EdgeInsets.all(16.h),
-          borderDecoration: TextFormFieldStyleHelper.getOutlineBlueGray,
-          fillcolor: theme.colorScheme.primaryContainer,
-        );
+
+  Widget _buildCategory(BuildContext context) {
+    return CategoryWidget(
+      onCategorySelected: (categoryId, categoryName) {
+        context.read<PostBloc>().add(CategorySelectedEvent(categoryId, categoryName));
       },
     );
   }
 
-  /// Section Widget
-  Widget _buildPassword(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      margin: EdgeInsets.only(left: 6.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "lbl_category".tr,
-            style: theme.textTheme.labelLarge,
-          ),
-          SizedBox(height: 8),
-          _buildCategoryInputSection(context)
-        ],
-      ),
-    );
-  }
-  Widget _buildDescription(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      margin: EdgeInsets.only(left: 6.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "lbl_category".tr,
-            style: theme.textTheme.labelLarge,
-          ),
-          SizedBox(height: 8),
-          _buildCategoryInputSection(context)
-        ],
-      ),
-    );
-  }
   Widget _buildProductName(BuildContext context) {
     return Container(
       width: double.maxFinite,
@@ -250,248 +225,229 @@ class PostScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "lbl_category".tr,
-            style: theme.textTheme.labelLarge,
-          ),
-          SizedBox(height: 8),
-          _buildCategoryInputSection(context)
-        ],
-      ),
-    );
-  }
-  /// Section Widget
-  Widget _buildDescriptionInputSection(BuildContext context) {
-    return SizedBox(
-      width: double.maxFinite,
-      child: Column(
-
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "lbl_description".tr,
-            style: theme.textTheme.labelLarge,
-          ),
-          SizedBox(height: 8),
+          Text("lbl_productname".tr, style: theme.textTheme.labelLarge),
+          SizedBox(height: 8.h),
           BlocSelector<PostBloc, PostState, TextEditingController?>(
-            selector: (state) => state.inputfieldfiveController,
-            builder: (context, inputfieldfiveController) {
+            selector: (state) => state.productNameController,
+            builder: (context, productNameController) {
               return CustomTextFormField(
-                controller: inputfieldfiveController,
-                hintText: "lbl_typing".tr,
-                hintStyle: CustomTextStyles.bodyLargeOnPrimaryContainer,
-                suffix: Container(
-                  margin: EdgeInsets.fromLTRB(16.h, 16.h, 18.h, 16.h),
-                  // child: CustomImageView(
-                  //   imagePath: ImageConstant.imgArrowRight,
-                  //   height: 22.h,
-                  //   width: 24.h,
-                  //   fit: BoxFit.contain,
-                  // ),
-                ),
-                suffixConstraints: BoxConstraints(
-                  maxHeight: 56.h,
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 18.h,
-                  vertical: 16.h,
-                ),
+                controller: productNameController,
+                hintText: "lbl_enter_product_name".tr,
+                contentPadding: EdgeInsets.all(16.h),
+                borderDecoration: TextFormFieldStyleHelper.getOutlineBlueGray,
+                fillColor: theme.colorScheme.primaryContainer,
+                onChanged: (value) {
+                  context.read<PostBloc>().add(ProductNameChangedEvent(value));
+                },
               );
             },
-          )
+          ),
         ],
       ),
     );
   }
 
-  /// Section Widget
-  Widget _buildErrorMessageSection(BuildContext context) {
+  Widget _buildDescription(BuildContext context) {
     return Container(
       width: double.maxFinite,
       margin: EdgeInsets.only(left: 6.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 8),
-          _buildDescriptionInputSection(context),
-          // Text(
-          //   "msg_error_message_informing".tr,
-          //   style: theme.textTheme.bodySmall,
-          // )
+          Text("lbl_description".tr, style: theme.textTheme.labelLarge),
+          SizedBox(height: 8.h),
+          BlocSelector<PostBloc, PostState, TextEditingController?>(
+            selector: (state) => state.descriptionController,
+            builder: (context, descriptionController) {
+              return CustomTextFormField(
+                controller: descriptionController,
+                hintText: "lbl_typing".tr,
+                hintStyle: CustomTextStyles.bodyLargeOnPrimaryContainer,
+                maxLines: 4,
+                contentPadding: EdgeInsets.all(16.h),
+                borderDecoration: TextFormFieldStyleHelper.getOutlineBlueGray,
+                fillColor: theme.colorScheme.primaryContainer,
+                onChanged: (value) {
+                  context.read<PostBloc>().add(DescriptionChangedEvent(value));
+                },
+              );
+            },
+          ),
         ],
       ),
     );
   }
 
-  /// Section Widget
-  Widget _buildPricetwo(BuildContext context) {
-    return BlocSelector<PostBloc, PostState, TextEditingController?>(
-      selector: (state) => state.pricetwoController,
-      builder: (context, pricetwoController) {
-        return CustomTextFormField(
-          controller: pricetwoController,
-          hintText: "lbl_enter_price".tr,
-          contentPadding: EdgeInsets.all(16.h),
-          borderDecoration: TextFormFieldStyleHelper.getOutlineBlueGray,
-          fillcolor: theme.colorScheme.primaryContainer,
-        );
-      },
-    );
-  }
-
-  /// Section Widget
   Widget _buildPriceInputSection(BuildContext context) {
     return Container(
       width: double.maxFinite,
       margin: EdgeInsets.only(left: 6.h),
       child: Column(
-
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "lbl_price".tr,
-            style: theme.textTheme.labelLarge,
+          Text("lbl_price".tr, style: theme.textTheme.labelLarge),
+          SizedBox(height: 8.h),
+          BlocSelector<PostBloc, PostState, TextEditingController?>(
+            selector: (state) => state.priceController,
+            builder: (context, priceController) {
+              return CustomTextFormField(
+                controller: priceController,
+                hintText: "lbl_enter_price".tr,
+                contentPadding: EdgeInsets.all(16.h),
+                borderDecoration: TextFormFieldStyleHelper.getOutlineBlueGray,
+                fillColor: theme.colorScheme.primaryContainer,
+                // keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  context.read<PostBloc>().add(PriceChangedEvent(value));
+                },
+              );
+            },
           ),
-          SizedBox(height: 8),
-          _buildPricetwo(context)
         ],
       ),
     );
   }
 
-  /// Section Widget
-  Widget _buildLocationtwo(BuildContext context) {
-    return BlocSelector<PostBloc, PostState, TextEditingController?>(
-      selector: (state) => state.locationtwoController,
-      builder: (context, locationtwoController) {
-        return CustomTextFormField(
-          controller: locationtwoController,
-          hintText: "msg_enter_location".tr,
-          textInputAction: TextInputAction.done,
-          maxLines: 2,
-          contentPadding: EdgeInsets.fromLTRB(16.h, 16.h, 16.h, 12.h),
-          borderDecoration: TextFormFieldStyleHelper.getOutlineBlueGray,
-          fillcolor: theme.colorScheme.primaryContainer,
-        );
-      },
-    );
-  }
-
-  /// Section Widget
   Widget _buildLocationInputSection(BuildContext context) {
     return Container(
       width: double.maxFinite,
       margin: EdgeInsets.only(left: 6.h),
       child: Column(
-
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "lbl_location".tr,
-            style: theme.textTheme.labelLarge,
+          Text("lbl_location".tr, style: theme.textTheme.labelLarge),
+          SizedBox(height: 8.h),
+          BlocSelector<PostBloc, PostState, TextEditingController?>(
+            selector: (state) => state.locationController,
+            builder: (context, locationController) {
+              return CustomTextFormField(
+                controller: locationController,
+                hintText: "msg_enter_location".tr,
+                textInputAction: TextInputAction.done,
+                maxLines: 2,
+                contentPadding: EdgeInsets.fromLTRB(16.h, 16.h, 16.h, 12.h),
+                borderDecoration: TextFormFieldStyleHelper.getOutlineBlueGray,
+                fillColor: theme.colorScheme.primaryContainer,
+                onChanged: (value) {
+                  context.read<PostBloc>().add(LocationChangedEvent(value));
+                },
+              );
+            },
           ),
-          SizedBox(height: 8),
-          _buildLocationtwo(context)
         ],
       ),
     );
   }
 
-  /// Section Widget
-  Widget _buildUsedRadioButton(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      margin: EdgeInsets.symmetric(horizontal: 6.h),
-      child: Row(
-        children: [
-          CustomImageView(
-            imagePath: ImageConstant.imgRadio,
-            height: 24.h,
-            width: 24.h,
-            radius: BorderRadius.circular(
-              12.h,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 16.h),
-            child: Text(
-              "lbl_used".tr,
-              style: theme.textTheme.bodyLarge,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  /// Section Widget
-  Widget _buildNewRadioButton(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      margin: EdgeInsets.symmetric(horizontal: 6.h),
-      child: Row(
-        children: [
-          CustomImageView(
-            imagePath: ImageConstant.imgRadio,
-            height: 24.h,
-            width: 24.h,
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 16.h),
-            child: Text(
-              "lbl_new".tr,
-              style: theme.textTheme.bodyLarge,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  /// Section Widget
-  Widget _buildCancel(BuildContext context) {
-    return CustomOutlinedButton(
-      height: 56.h,
-      width: 172.h,
-      text: "lbl_cancel".tr,
-      buttonTextStyle: CustomTextStyles.bodyLargeDeeppurpleA20001,
-      onPressed: () {
-        Navigator.pushNamed(context, '/personal_screen');
-      },
-    );
-  }
-
-
-  /// Section Widget
-  Widget _buildPosttwo(BuildContext context) {
-    return CustomElevatedButton(
-      height: 56.h,
-      width: 172.h,
-      text: "lbl_post".tr,
-      buttonStyle: CustomButtonStyles.fillBlueGray,
-      buttonTextStyle: CustomTextStyles.bodyLargeOnPrimaryContainer,
-    );
-  }
-
-  /// Section Widget
-  Widget _buildCtaButtons(BuildContext context) {
+  Widget _buildImageUploadSection(BuildContext context) {
     return Container(
       width: double.maxFinite,
       margin: EdgeInsets.only(left: 6.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_buildCancel(context), _buildPosttwo(context)],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("lbl_upload_image".tr, style: theme.textTheme.labelLarge),
+          SizedBox(height: 8.h),
+          BlocBuilder<PostBloc, PostState>(
+            builder: (context, state) {
+              return GestureDetector(
+                onTap: () async {
+                  final ImagePicker picker = ImagePicker();
+                  final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) {
+                    context.read<PostBloc>().add(ImageSelectedEvent(File(pickedFile.path)));
+                  }
+                },
+                child: Container(
+                  height: 150.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(8.h),
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: state.imageFile != null
+                      ? Image.file(state.imageFile!, fit: BoxFit.cover)
+                      : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.image, size: 50.h, color: Colors.grey),
+                        SizedBox(height: 8.h),
+                        Text("lbl_select_image".tr, style: theme.textTheme.bodyLarge),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 
-  /// Section Widget
-  Widget _buildBottomBar(BuildContext context) {
-    return SizedBox(
+  Widget _buildConditionRadios(BuildContext context) {
+    return Container(
       width: double.maxFinite,
-      child: CustomBottomBar(
-        onChanged: (BottomBarEnum type) {},
+      margin: EdgeInsets.only(left: 6.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("lbl_product_status".tr, style: theme.textTheme.labelLarge),
+          SizedBox(height: 8.h),
+          Row(
+            children: [
+              Radio<ItemCondition>(
+                value: ItemCondition.newItem,
+                groupValue: _condition,
+                onChanged: (value) {
+                  setState(() {
+                    _condition = value;
+                  });
+                },
+              ),
+              Text("Mới", style: theme.textTheme.bodyMedium),
+              SizedBox(width: 16.h),
+              Radio<ItemCondition>(
+                value: ItemCondition.usedItem,
+                groupValue: _condition,
+                onChanged: (value) {
+                  setState(() {
+                    _condition = value;
+                  });
+                },
+              ),
+              Text("Đã qua sử dụng", style: theme.textTheme.bodyMedium),
+            ],
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _buildCtaButtons(BuildContext context) {
+    return Container(
+      width: double.maxFinite,
+      margin: EdgeInsets.only(left: 6.h, right: 6.h),
+      child: CustomElevatedButton(
+        text: "lbl_submit_post".tr,
+        onPressed: () => _submitPost(context),
+        buttonStyle: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF0047AB)),
+          foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // ✅ Ensures text is white
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.h),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  Widget _buildBottomBar(BuildContext context) {
+    return CustomBottomBar();
   }
 }

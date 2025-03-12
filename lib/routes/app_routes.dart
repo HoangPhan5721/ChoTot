@@ -9,6 +9,7 @@ import '../presentation/register_screen/register_screen.dart';
 import '../presentation/splash_screen/splash_screen.dart';
 import '../presentation/personal_screen/personal_screen.dart';
 import '../presentation/post_screen/post_screen.dart';
+import '../presentation/inf_personal_screen/inf_personal_screen.dart';
 class AppRoutes {
   static const String splashScreen = '/splash_screen';
   static const String homeScreen = '/homepage_screen';
@@ -22,8 +23,10 @@ class AppRoutes {
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String initialRoute = '/initialRoute';
   static const String postScreen = '/post_screen';
+  static const String infPersonalScreen = '/inf_personal_screen';
   static Map<String, WidgetBuilder> get routes => {
     splashScreen: SplashScreen.builder,
+    infPersonalScreen: InfPersonalScreen.builder,
     homeScreen: HomePageScreen.builder,
     loginScreen: LoginScreen.builder,
     registerScreen: RegisterScreen.builder,

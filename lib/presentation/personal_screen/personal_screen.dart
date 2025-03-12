@@ -112,7 +112,6 @@ class PersonalPage extends StatelessWidget {
         borderRadius: BorderRadiusStyle.roundedBorder10,
       ),
       child: Column(
-        // spacing: 18,
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
@@ -121,6 +120,9 @@ class PersonalPage extends StatelessWidget {
               context,
               linebusinessp: ImageConstant.imgLineBusinessProfileLine,
               editprofile: "msg_edit_profile_information".tr,
+              onTap: () {
+                NavigatorService.pushNamed('/inf_personal_screen');
+              },
             ),
           ),
           SizedBox(height: 18),
@@ -316,31 +318,36 @@ class PersonalPage extends StatelessWidget {
     );
   }
   /// Common widget
+  /// Common widget
   Widget _buildSecurityRow(
-    BuildContext context, {
-    required String linebusinessp,
-    required String editprofile,
-  }) {
-    return Row(
-      children: [
-        CustomImageView(
-          imagePath: linebusinessp,
-          height: 24.h,
-          width: 24.h,
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: EdgeInsets.only(left: 12.h),
-            child: Text(
-              editprofile,
-              style: theme.textTheme.bodyMedium!.copyWith(
-                color: appTheme.black900,
+      BuildContext context, {
+        required String linebusinessp,
+        required String editprofile,
+        VoidCallback? onTap, // Add this to handle tap events
+      }) {
+    return GestureDetector(
+      onTap: onTap, // Add tap handler
+      child: Row(
+        children: [
+          CustomImageView(
+            imagePath: linebusinessp,
+            height: 24.h,
+            width: 24.h,
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(left: 12.h),
+              child: Text(
+                editprofile,
+                style: theme.textTheme.bodyMedium!.copyWith(
+                  color: appTheme.black900,
+                ),
               ),
             ),
           ),
-        )
-      ],
+        ],
+      ),
     );
   }
 }
