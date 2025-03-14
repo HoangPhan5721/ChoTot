@@ -12,12 +12,12 @@ class CategoryList extends StatelessWidget {
         children: [
           CategoryItem(name: 'Bất động sản', icon: Icons.home),
           CategoryItem(name: 'Xe cộ', icon: Icons.car_repair),
-          CategoryItem(name: 'Đồ điện tử', icon: Icons.devices),
+          CategoryItem(name: 'Điện tử & Công nghệ', icon: Icons.devices),
           CategoryItem(name: 'Thú cưng', icon: Icons.pets),
-          CategoryItem(name: 'Việc làm', icon: Icons.work),
+          CategoryItem(name: 'Việc làm & Dịch vụ', icon: Icons.work),
           CategoryItem(name: 'Đồ gia dụng', icon: Icons.kitchen),
           CategoryItem(name: 'Đồ ăn', icon: Icons.fastfood),
-          CategoryItem(name: 'Thời trang', icon: Icons.shopping_bag),
+          CategoryItem(name: 'Thời trang & Làm đẹp', icon: Icons.shopping_bag),
         ],
       ),
     );
@@ -40,7 +40,7 @@ class CategoryItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center, // Căn giữa theo chiều ngang
         children: [
           // Đảm bảo icon luôn ở trên cùng và căn giữa
-          Icon(icon, size: 40, color: Color(0xFF4CAF50)),
+          Icon(icon, size: 40, color: Color(0xFF0047AB)),
           SizedBox(height: 8), // Khoảng cách giữa icon và text
           // Text sẽ tự động xuống dòng nhưng sẽ căn chỉnh đều với icon
           Text(

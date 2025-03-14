@@ -30,6 +30,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       if (data['success'] == true) {
         List<Product> products = (data['data']['data'] as List)
             .map((item) => Product(
+          id: item['id'],
           name: item['title'],
           price: double.parse(item['price']),
           imageUrl: item['images'].isNotEmpty

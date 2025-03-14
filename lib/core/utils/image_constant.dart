@@ -4,6 +4,8 @@ class ImageConstant {
   static String imgImage9 = '$imagePath/image9.png';
   static String imgImage10 = '$imagePath/image10.png';
   static String imgBanner = '$imagePath/banner.png';
+  static String imgBanner2 = '$imagePath/banner2.png';
+  static String imgBanner3 = '$imagePath/banner3.png';
 
   static String imagePath = 'assets/images';
   static String imgArrowRight = '$imagePath/img_arrow_right.png';

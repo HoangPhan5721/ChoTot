@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../productcard_screen/product_card.dart';
 import '../models/homepage_model.dart';
 
 class ProductGrid extends StatelessWidget {
@@ -39,32 +40,51 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          product.imageUrl.isNotEmpty
-              ? Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
-            height: 120, // Set a fixed height
-            width: double.infinity,
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(Icons.image_not_supported,
-                  size: 50, color: Colors.grey);
-            },
-          )
-              : const Icon(Icons.image_not_supported,
-              size: 50, color: Colors.grey), // Fallback icon
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+    return GestureDetector(
+      onTap: () {
+        // Điều hướng đến ProductCard với productId
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailScreen(
+              productId: product.id, // Truyền productId vào ProductCard
+            ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('${formatCurrency(product.price)} đ', style: const TextStyle(color: Colors.red)),
-          ),
-        ],
+        );
+      },
+      child: Card(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            product.imageUrl.isNotEmpty
+                ? Image.network(
+                    product.imageUrl,
+                    fit: BoxFit.cover,
+                    height: 120, // Set a fixed height
+                    width: double.infinity,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.image_not_supported,
+                          size: 50, color: Colors.grey);
+                    },
+                  )
+                : const Icon(Icons.image_not_supported,
+                    size: 50, color: Colors.grey), // Fallback icon
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                product.name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                '${formatCurrency(product.price)} đ',
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

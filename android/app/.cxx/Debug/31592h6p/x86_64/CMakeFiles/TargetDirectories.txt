@@ -1,0 +1,2 @@
+C:/Users/LENOVO/INTERN2025/Cho_tot_ new/ChoTot/android/app/.cxx/Debug/31592h6p/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/LENOVO/INTERN2025/Cho_tot_ new/ChoTot/android/app/.cxx/Debug/31592h6p/x86_64/CMakeFiles/rebuild_cache.dir
