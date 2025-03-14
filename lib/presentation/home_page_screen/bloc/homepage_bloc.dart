@@ -6,8 +6,11 @@ import 'homepage_state.dart';
 import 'package:intern/presentation/home_page_screen/models/homepage_model.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
+  List<Product> allProducts = []; // Store all products
+
   HomePageBloc() : super(HomePageInitial()) {
     on<LoadProductList>(_onLoadProductList);
+    on<SearchProducts>(_onSearchProducts);
   }
 
   Future<void> _onLoadProductList(
@@ -15,9 +18,23 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     emit(HomePageLoading());
     try {
       List<Product> productList = await fetchProductList();
-      emit(HomePageLoaded(productList: productList));
+      allProducts = productList; // ✅ Now storing fetched products
+      emit(HomePageLoaded(productList: allProducts)); // ✅ Show fetched products
     } catch (e) {
       emit(HomePageError(message: 'Lỗi khi tải sản phẩm: ${e.toString()}'));
+    }
+  }
+
+  void _onSearchProducts(SearchProducts event, Emitter<HomePageState> emit) {
+    if (event.query.isEmpty) {
+      // ✅ If search is empty, show all products
+      emit(HomePageLoaded(productList: allProducts));
+    } else {
+      final filteredProducts = allProducts
+          .where((product) =>
+              product.name.toLowerCase().contains(event.query.toLowerCase()))
+          .toList();
+      emit(HomePageSearchResults(filteredProducts));
     }
   }
 
@@ -30,13 +47,13 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       if (data['success'] == true) {
         List<Product> products = (data['data']['data'] as List)
             .map((item) => Product(
-          id: item['id'],
-          name: item['title'],
-          price: double.parse(item['price']),
-          imageUrl: item['images'].isNotEmpty
-              ? item['images'][0]['image_url']
-              : '',
-        ))
+                  id: item['id'],
+                  name: item['title'],
+                  price: double.parse(item['price']),
+                  imageUrl: item['images'].isNotEmpty
+                      ? item['images'][0]['image_url']
+                      : '',
+                ))
             .toList();
         return products;
       } else {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intern/core/app_export.dart';
+import 'package:intern/presentation/home_page_screen/bloc/homepage_bloc.dart';
+import 'package:intern/presentation/home_page_screen/bloc/homepage_event.dart';
 
 var globalMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -20,32 +22,29 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, deviceType) {
-        return BlocProvider(
-          create: (context) => ThemeBloc(
-            ThemeState(
-              themeType: PrefUtils().getThemeData(),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => ThemeBloc(
+                ThemeState(themeType: PrefUtils().getThemeData()),
+              ),
             ),
-          ),
+            BlocProvider(
+              create: (context) => HomePageBloc()..add(LoadProductList()), // ✅ Keep HomePageBloc persistent
+            ),
+          ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, state) {
               return MaterialApp(
                 theme: theme,
                 title: 'chotot',
-                builder: (context, child) {
-                  return MediaQuery(
-                    data: MediaQuery.of(context).copyWith(
-                      textScaler: TextScaler.linear(1.0),
-                    ),
-                    child: child!,
-                  );
-                },
                 navigatorKey: NavigatorService.navigatorKey,
                 debugShowCheckedModeBanner: false,
                 localizationsDelegates: [
                   AppLocalizationDelegate(),
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate
+                  GlobalCupertinoLocalizations.delegate,
                 ],
                 locale: Locale('en', ''),
                 supportedLocales: [Locale('en', '')],

@@ -19,3 +19,9 @@ class HomePageError extends HomePageState {
 
   HomePageError({required this.message});
 }
+
+class HomePageSearchResults extends HomePageState {
+  final List<Product> filteredProducts;
+
+  HomePageSearchResults(this.filteredProducts);
+}
