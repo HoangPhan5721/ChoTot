@@ -10,6 +10,8 @@ import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_text_form_field.dart';
 import 'bloc/login_bloc.dart';
 import 'models/login_model.dart';
+import 'package:provider/provider.dart';
+import 'package:intern/providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -70,11 +72,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (token != null) {
-          // Navigator.pushNamed(context, '/homepage_screen');
-          Navigator.pushNamed(
-              context,
-              '/post_screen',
-              arguments: {'userId': userId},);
+          Provider.of<AuthProvider>(context, listen: false).setToken(token);
+          Navigator.pushNamed(context, '/post_screen', arguments: {'userId': userId});
         } else {
           setState(() => emailError = "Invalid email or password");
         }
