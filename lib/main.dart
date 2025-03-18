@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intern/core/app_export.dart';
 import 'package:intern/presentation/home_page_screen/bloc/homepage_bloc.dart';
+import 'package:intern/presentation/chat_screen/blocs/chat_bloc.dart';
+import 'package:intern/presentation/chat_screen/services/chat_service.dart';
 import 'package:intern/presentation/home_page_screen/bloc/homepage_event.dart';
 import 'package:intern/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +39,9 @@ class MyApp extends StatelessWidget {
               ),
               BlocProvider(
                 create: (context) => HomePageBloc()..add(LoadProductList()),
+              ),
+             BlocProvider(
+                create: (context) => ChatBloc(chatService: ChatService()), // ✅ Add chatService
               ),
             ],
             child: BlocBuilder<ThemeBloc, ThemeState>(

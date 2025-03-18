@@ -8,6 +8,7 @@ import '../lib/presentation/my_cart_screen/my_cart_screen.dart';
 import '../lib/presentation/register_screen/register_screen.dart';
 import '../lib/presentation/personal_screen/personal_screen.dart';
 import '../lib/presentation/splash_screen/splash_screen.dart';
+import '../lib/presentation/chat_screen/chat_screen.dart';
 
 class AppRoutes {
   static const String splashScreen = '/splash_screen';
@@ -33,6 +34,11 @@ class AppRoutes {
     // personalScreen : PersonalScreen.builder,
     // paymentScreen: PaymentScreen.builder,
     // appNavigationScreen: AppNavigationScreen.builder,
-    initialRoute: SplashScreen.builder
+    initialRoute: SplashScreen.builder,
+      chatScreen: (context) => ChatScreen(
+      sellerId: '', // Pass actual seller ID
+      sellerName: '', // Pass actual seller name
+      profileImage: '', // Pass actual profile image
+    ),
   };
 }

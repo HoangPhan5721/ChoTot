@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
+import '../../providers/auth_provider.dart';
 
 import 'package:logger/logger.dart';
 
@@ -213,14 +214,22 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
+                                    final token = Provider.of<AuthProvider>(context, listen: false).token;
+                                    if (token == null) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text("Bạn chưa đăng nhập!")),
+                                      );
+                                      return;
+                                    }
+                                    
                                     Navigator.pushNamed(
                                       context,
                                       "/chat_screen",
                                       arguments: {
+                                        'token': token, // ✅ Pass token
                                         'sellerId': product.userId,
                                         'sellerName': product.seller.name,
-                                        'profileImage':
-                                            product.seller.avatarUrl,
+                                        'profileImage': product.seller.avatarUrl,
                                       },
                                     );
                                   },

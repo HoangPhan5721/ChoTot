@@ -10,6 +10,8 @@ import '../presentation/splash_screen/splash_screen.dart';
 import '../presentation/personal_screen/personal_screen.dart';
 import '../presentation/post_screen/post_screen.dart';
 import '../presentation/inf_personal_screen/inf_personal_screen.dart';
+import '../presentation/chat_screen/chat_screen.dart';
+
 class AppRoutes {
   static const String splashScreen = '/splash_screen';
   static const String homeScreen = '/homepage_screen';
@@ -24,18 +26,26 @@ class AppRoutes {
   static const String initialRoute = '/initialRoute';
   static const String postScreen = '/post_screen';
   static const String infPersonalScreen = '/inf_personal_screen';
+  static const String chatScreen = '/chat_screen';
+
   static Map<String, WidgetBuilder> get routes => {
     splashScreen: SplashScreen.builder,
     infPersonalScreen: InfPersonalScreen.builder,
     homeScreen: HomePageScreen.builder,
     loginScreen: LoginScreen.builder,
     registerScreen: RegisterScreen.builder,
-    // orderScreen: OrderScreen.builder,
     postScreen: PostScreen.builder,
-    personalScreen : PersonalPage.builder,
+    personalScreen: PersonalPage.builder,
     myCartScreen: MyCartScreen.builder,
-    // paymentScreen: PaymentScreen.builder,
-    //appNavigationScreen: AppNavigationScreen.builder,
+    chatScreen: (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      return ChatScreen(
+        sellerId: args['sellerId'].toString(),
+        sellerName: args['sellerName'],
+        profileImage: args['profileImage'],
+      );
+    },
     initialRoute: LoginScreen.builder,
-  };
+};
+
 }
