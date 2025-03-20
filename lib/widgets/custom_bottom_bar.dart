@@ -13,8 +13,9 @@ enum BottomBarEnum {
 
 class CustomBottomBar extends StatefulWidget {
   final Function(BottomBarEnum)? onChanged;
+  final int? userId; // Add userId parameter
 
-  CustomBottomBar({this.onChanged});
+  CustomBottomBar({this.onChanged, this.userId});
 
   @override
   CustomBottomBarState createState() => CustomBottomBarState();
@@ -25,7 +26,7 @@ class CustomBottomBarState extends State<CustomBottomBar> {
 
   List<BottomMenuModel> getBottomMenuList(String? route) {
     if (route == null) {
-      return []; // Trả về danh sách rỗng nếu route không hợp lệ
+      return [];
     }
 
     switch (route) {
@@ -59,9 +60,8 @@ class CustomBottomBarState extends State<CustomBottomBar> {
         ];
     }
 
-    return []; // Nếu route không khớp với bất kỳ case nào, trả về danh sách rỗng
+    return [];
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,7 @@ class CustomBottomBarState extends State<CustomBottomBar> {
             color: appTheme.black900.withOpacity(0.25),
             spreadRadius: 2.h,
             blurRadius: 2.h,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           )
         ],
       ),
@@ -120,7 +120,12 @@ class CustomBottomBarState extends State<CustomBottomBar> {
           BottomBarEnum selectedType = bottomMenuList[index].type;
           String route = getRouteForType(selectedType);
           if (route.isNotEmpty) {
-            Navigator.pushNamed(context, route);
+            // Pass userId as an argument when navigating
+            Navigator.pushNamed(
+              context,
+              route,
+              arguments: {'userId': widget.userId},
+            );
           }
 
           widget.onChanged?.call(selectedType);

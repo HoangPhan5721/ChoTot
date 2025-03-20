@@ -3,25 +3,100 @@ import 'package:intern/core/utils/image_constant.dart';
 import 'package:intern/widgets/custom_image_view.dart';
 import '../../core/app_export.dart';
 import '../../theme/custom_button_style.dart';
-import '../../widgets/app_bar/appbar_leading_iconbutton_one.dart';
-import '../../widgets/app_bar/custom_app_bar.dart';
 import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_text_form_field.dart';
 import 'bloc/register_bloc.dart';
 import 'models/register_model.dart';
 
-class RegisterScreen extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>(); // Form key for validation
-
-  RegisterScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
 
   static Widget builder(BuildContext context) {
     return BlocProvider<RegisterBloc>(
       create: (context) => RegisterBloc(RegisterState(
         registerModelObj: RegisterModel(),
       ))..add(RegisterInitialEvent()),
-      child: RegisterScreen(),
+      child: const RegisterScreen(),
     );
+  }
+
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController phoneController;
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late TextEditingController confirmPasswordController;
+
+  @override
+  void initState() {
+    super.initState();
+    phoneController = TextEditingController();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    confirmPasswordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    phoneController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  String? _validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Số điện thoại không được để trống";
+    }
+    if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+      return "Vui lòng nhập số điện thoại 10 chữ số hợp lệ";
+    }
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Email không được để trống";
+    }
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+      return "Vui lòng nhập địa chỉ email hợp lệ";
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Mật khẩu không được để trống";
+    }
+    if (value.length < 8) {
+      return "Mật khẩu phải dài ít nhất 8 ký tự";
+    }
+    if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d).+$').hasMatch(value)) {
+      return "Mật khẩu phải chứa cả chữ cái và số";
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Xác nhận mật khẩu không được để trống";
+    }
+    if (value != passwordController.text) {
+      return "Mật khẩu không khớp";
+    }
+    return null;
+  }
+
+  void _validateForm() {
+    // Trigger validation and update UI
+    setState(() {
+      _formKey.currentState?.validate();
+    });
   }
 
   @override
@@ -35,6 +110,8 @@ class RegisterScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Form(
               key: _formKey,
+              // Optionally set autovalidateMode for continuous validation
+              // autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Container(
                 width: double.maxFinite,
                 padding: EdgeInsets.only(left: 26.h, top: 30.h, right: 26.h),
@@ -68,7 +145,7 @@ class RegisterScreen extends StatelessWidget {
                             "lbl_login".tr,
                             style: CustomTextStyles.labelLargePrimary.copyWith(
                               decoration: TextDecoration.underline,
-                              color: Color(0xFF0047AB),
+                              color: const Color(0xFF0047AB),
                             ),
                           ),
                         ),
@@ -84,177 +161,116 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-  /// Section Widget: Phone Input
   Widget _buildPhoneInput(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 4.h),
-      child: BlocSelector<RegisterBloc, RegisterState, TextEditingController?>(
-        selector: (state) => state.fullNameInputController,
-        builder: (context, fullNameInputController) {
-          return CustomTextFormField(
-            controller: fullNameInputController,
-            hintText: "lbl_phone".tr,
-            prefix: Container(
-              margin: EdgeInsets.fromLTRB(18.h, 16.h, 14.h, 16.h),
-              child: CustomImageView(
-                imagePath: ImageConstant.imgUser,
-                height: 24.h,
-                width: 24.h,
-                fit: BoxFit.contain,
-              ),
-            ),
-            prefixConstraints: BoxConstraints(maxHeight: 58.h),
-            contentPadding: EdgeInsets.symmetric(horizontal: 18.h, vertical: 16.h),
-            borderDecoration: TextFormFieldStyleHelper.fillGray,
-            fillColor: Colors.white,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Số điện thoại không được để trống";
-              }
-              if (!RegExp(r'^\d{10}$').hasMatch(value)) {
-                return "Vui lòng nhập số điện thoại 10 chữ số hợp lệ";
-              }
-              return null;
-            },
-          );
-        },
+      child: CustomTextFormField(
+        controller: phoneController,
+        hintText: "lbl_phone".tr,
+        prefix: Container(
+          margin: EdgeInsets.fromLTRB(18.h, 16.h, 14.h, 16.h),
+          child: CustomImageView(
+            imagePath: ImageConstant.imgUser,
+            height: 24.h,
+            width: 24.h,
+            fit: BoxFit.contain,
+          ),
+        ),
+        prefixConstraints: BoxConstraints(maxHeight: 58.h),
+        contentPadding: EdgeInsets.symmetric(horizontal: 18.h, vertical: 16.h),
+        borderDecoration: TextFormFieldStyleHelper.fillGray,
+        fillColor: Colors.white,
+        validator: _validatePhone,
+        onChanged: (value) => _validateForm(), // Validate in real-time
       ),
     );
   }
 
-  /// Section Widget: Email Input
   Widget _buildEmailInput(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 4.h),
-      child: BlocSelector<RegisterBloc, RegisterState, TextEditingController?>(
-        selector: (state) => state.emailInputController,
-        builder: (context, emailInputController) {
-          return CustomTextFormField(
-            controller: emailInputController,
-            hintText: "lbl_email".tr,
-            prefix: Container(
-              margin: EdgeInsets.fromLTRB(18.h, 16.h, 12.h, 16.h),
-              child: CustomImageView(
-                imagePath: ImageConstant.imgEmail,
-                height: 20.h,
-                width: 16.h,
-                fit: BoxFit.contain,
-              ),
-            ),
-            prefixConstraints: BoxConstraints(maxHeight: 56.h),
-            contentPadding: EdgeInsets.fromLTRB(18.h, 16.h, 12.h, 16.h),
-            borderDecoration: TextFormFieldStyleHelper.fillGray,
-            fillColor: Colors.white,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Email không được để trống";
-              }
-              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                return "Vui lòng nhập địa chỉ email hợp lệ";
-              }
-              return null;
-            },
-          );
-        },
+      child: CustomTextFormField(
+        controller: emailController,
+        hintText: "lbl_email".tr,
+        prefix: Container(
+          margin: EdgeInsets.fromLTRB(18.h, 16.h, 12.h, 16.h),
+          child: CustomImageView(
+            imagePath: ImageConstant.imgEmail,
+            height: 20.h,
+            width: 16.h,
+            fit: BoxFit.contain,
+          ),
+        ),
+        prefixConstraints: BoxConstraints(maxHeight: 56.h),
+        contentPadding: EdgeInsets.fromLTRB(18.h, 16.h, 12.h, 16.h),
+        borderDecoration: TextFormFieldStyleHelper.fillGray,
+        fillColor: Colors.white,
+        validator: _validateEmail,
+        onChanged: (value) => _validateForm(), // Validate in real-time
       ),
     );
   }
 
-  /// Section Widget: Password Input
   Widget _buildPasswordInput(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 4.h),
-      child: BlocSelector<RegisterBloc, RegisterState, TextEditingController?>(
-        selector: (state) => state.passwordInputController,
-        builder: (context, passwordInputController) {
-          return CustomTextFormField(
-            controller: passwordInputController,
-            hintText: "lbl_password".tr,
-            textInputAction: TextInputAction.next,
-            prefix: Container(
-              margin: EdgeInsets.fromLTRB(18.h, 16.h, 14.h, 16.h),
-              child: CustomImageView(
-                imagePath: ImageConstant.imgLock,
-                height: 24.h,
-                width: 24.h,
-                fit: BoxFit.contain,
-              ),
-            ),
-            prefixConstraints: BoxConstraints(maxHeight: 58.h),
-            obscureText: true,
-            contentPadding: EdgeInsets.symmetric(horizontal: 18.h, vertical: 16.h),
-            borderDecoration: TextFormFieldStyleHelper.fillGray,
-            fillColor: Colors.white,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Mật khẩu không được để trống";
-              }
-              if (value.length < 8) {
-                return "Mật khẩu phải dài ít nhất 8 ký tự";
-              }
-              if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d).+$').hasMatch(value)) {
-                return "Mật khẩu phải chứa cả chữ cái và số";
-              }
-              return null;
-            },
-          );
-        },
+      child: CustomTextFormField(
+        controller: passwordController,
+        hintText: "lbl_password".tr,
+        textInputAction: TextInputAction.next,
+        prefix: Container(
+          margin: EdgeInsets.fromLTRB(18.h, 16.h, 14.h, 16.h),
+          child: CustomImageView(
+            imagePath: ImageConstant.imgLock,
+            height: 24.h,
+            width: 24.h,
+            fit: BoxFit.contain,
+          ),
+        ),
+        prefixConstraints: BoxConstraints(maxHeight: 58.h),
+        obscureText: true,
+        contentPadding: EdgeInsets.symmetric(horizontal: 18.h, vertical: 16.h),
+        borderDecoration: TextFormFieldStyleHelper.fillGray,
+        fillColor: Colors.white,
+        validator: _validatePassword,
+        onChanged: (value) => _validateForm(), // Validate in real-time
       ),
     );
   }
 
-  /// Section Widget: Confirm Password Input
   Widget _buildConfirmPasswordInput(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 4.h),
-      child: BlocSelector<RegisterBloc, RegisterState, TextEditingController?>(
-        selector: (state) => state.confirmPasswordInputController,
-        builder: (context, confirmPasswordInputController) {
-          final passwordController = context.read<RegisterBloc>().state.passwordInputController;
-
-          return CustomTextFormField(
-            controller: confirmPasswordInputController,
-            hintText: "msg_confirm_password".tr,
-            textInputAction: TextInputAction.done,
-            prefix: Container(
-              margin: EdgeInsets.fromLTRB(18.h, 16.h, 14.h, 16.h),
-              child: CustomImageView(
-                imagePath: ImageConstant.imgLock,
-                height: 24.h,
-                width: 24.h,
-                fit: BoxFit.contain,
-              ),
-            ),
-            prefixConstraints: BoxConstraints(maxHeight: 58.h),
-            obscureText: true,
-            contentPadding: EdgeInsets.symmetric(horizontal: 18.h, vertical: 16.h),
-            borderDecoration: TextFormFieldStyleHelper.fillGray,
-            fillColor: Colors.white,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Xác nhận mật khẩu không được để trống";
-              }
-              if (value != passwordController?.text) {
-                return "Mật khẩu không khớp";
-              }
-              return null;
-            },
-          );
-        },
+      child: CustomTextFormField(
+        controller: confirmPasswordController,
+        hintText: "msg_confirm_password".tr,
+        textInputAction: TextInputAction.done,
+        prefix: Container(
+          margin: EdgeInsets.fromLTRB(18.h, 16.h, 14.h, 16.h),
+          child: CustomImageView(
+            imagePath: ImageConstant.imgLock,
+            height: 24.h,
+            width: 24.h,
+            fit: BoxFit.contain,
+          ),
+        ),
+        prefixConstraints: BoxConstraints(maxHeight: 58.h),
+        obscureText: true,
+        contentPadding: EdgeInsets.symmetric(horizontal: 18.h, vertical: 16.h),
+        borderDecoration: TextFormFieldStyleHelper.fillGray,
+        fillColor: Colors.white,
+        validator: _validateConfirmPassword,
+        onChanged: (value) => _validateForm(), // Validate in real-time
       ),
     );
   }
 
-  /// Section Widget: Sign-Up Button with Loading Indicator
-  /// Section Widget: Sign-Up Button with Loading Indicator
-  /// Section Widget: Sign-Up Button with Loading Indicator
   Widget _buildSignUpButton(BuildContext context) {
     return BlocConsumer<RegisterBloc, RegisterState>(
       listener: (context, state) {
-        print("Listener: isLoading=${state.isLoading}, isSuccess=${state.isSuccess}, errorMessage=${state.errorMessage}");
         if (state.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Đăng ký thành công!")),
+            const SnackBar(content: Text("Đăng ký thành công!")),
           );
           Navigator.pushReplacementNamed(context, '/login_screen');
         } else if (state.errorMessage != null) {
@@ -269,7 +285,7 @@ class RegisterScreen extends StatelessWidget {
           text: "lbl_sign_up".tr,
           margin: EdgeInsets.only(left: 2.h),
           buttonStyle: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF0047AB),
+            backgroundColor: const Color(0xFF0047AB),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           ),
           buttonTextStyle: theme.textTheme.titleLarge!.copyWith(color: Colors.white),
@@ -277,7 +293,7 @@ class RegisterScreen extends StatelessWidget {
               ? SizedBox(
             height: 24.h,
             width: 24.h,
-            child: CircularProgressIndicator(
+            child: const CircularProgressIndicator(
               color: Colors.white,
               strokeWidth: 3.0,
             ),
@@ -288,9 +304,9 @@ class RegisterScreen extends StatelessWidget {
               : () {
             if (_formKey.currentState!.validate()) {
               final registerBloc = context.read<RegisterBloc>();
-              final email = registerBloc.state.emailInputController?.text.trim() ?? "";
-              final password = registerBloc.state.passwordInputController?.text.trim() ?? "";
-              final phone = registerBloc.state.fullNameInputController?.text.trim() ?? "";
+              final email = emailController.text.trim();
+              final password = passwordController.text.trim();
+              final phone = phoneController.text.trim();
               registerBloc.add(RegisterSubmitEvent(email, password, phone));
             }
           },

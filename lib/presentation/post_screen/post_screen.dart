@@ -26,6 +26,7 @@ class PostScreen extends StatefulWidget {
   const PostScreen({Key? key, this.userId}) : super(key: key);
 
   static Widget builder(BuildContext context) {
+
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     final int? userId = args?['userId'] as int?;
     return BlocProvider<PostBloc>(

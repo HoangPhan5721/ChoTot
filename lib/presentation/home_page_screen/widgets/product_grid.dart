@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../productcard_screen/product_card.dart';
+import '../../productcard_screen/product_card.dart'; // Assuming this is ProductDetailScreen
 import '../models/homepage_model.dart';
 
 class ProductGrid extends StatelessWidget {
   final List<Product> productList;
+  final String? token; // Token is already included
 
-  const ProductGrid({super.key, required this.productList});
+  const ProductGrid({super.key, required this.productList, this.token});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,10 @@ class ProductGrid extends StatelessWidget {
       ),
       itemCount: productList.length,
       itemBuilder: (context, index) {
-        return ProductCard(product: productList[index]);
+        return ProductCard(
+          product: productList[index],
+          token: token, // Pass the token to ProductCard
+        );
       },
     );
   }
@@ -30,8 +34,9 @@ class ProductGrid extends StatelessWidget {
 
 class ProductCard extends StatelessWidget {
   final Product product;
+  final String? token; // Add token parameter
 
-  const ProductCard({super.key, required this.product});
+  const ProductCard({super.key, required this.product, this.token});
 
   String formatCurrency(double amount) {
     final formatCurrency = NumberFormat("#,##0", "vi_VN");
@@ -42,12 +47,13 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Điều hướng đến ProductCard với productId
+        // Navigate to ProductDetailScreen with productId and token
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ProductDetailScreen(
-              productId: product.id, // Truyền productId vào ProductCard
+              productId: product.id,
+              token: token, // Pass the token here
             ),
           ),
         );
@@ -58,17 +64,17 @@ class ProductCard extends StatelessWidget {
           children: [
             product.imageUrl.isNotEmpty
                 ? Image.network(
-                    product.imageUrl,
-                    fit: BoxFit.cover,
-                    height: 120, // Set a fixed height
-                    width: double.infinity,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(Icons.image_not_supported,
-                          size: 50, color: Colors.grey);
-                    },
-                  )
+              product.imageUrl,
+              fit: BoxFit.cover,
+              height: 120,
+              width: double.infinity,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(Icons.image_not_supported,
+                    size: 50, color: Colors.grey);
+              },
+            )
                 : const Icon(Icons.image_not_supported,
-                    size: 50, color: Colors.grey), // Fallback icon
+                size: 50, color: Colors.grey),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(

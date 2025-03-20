@@ -35,6 +35,22 @@ class _LoginScreenState extends State<LoginScreen> {
   final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
 
   @override
+  void initState() {
+    super.initState();
+    // Add listeners to validate input as the user types
+    emailController.addListener(() {
+      setState(() {
+        emailError = _validateEmail(emailController.text.trim());
+      });
+    });
+    passwordController.addListener(() {
+      setState(() {
+        passwordError = _validatePassword(passwordController.text.trim());
+      });
+    });
+  }
+
+  @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
@@ -64,17 +80,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final responseData = jsonDecode(response.body);
       String? token = responseData["metadata"]?["token"]?["accessToken"];
-      int? userId = responseData["metadata"]?["user"]?["userId"]; // Extract userId
+      int? userId = responseData["metadata"]?["user"]?["userId"];
 
       isLoading.value = false;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (token != null) {
-          // Navigator.pushNamed(context, '/homepage_screen');
+        if (token != null && userId != null) {
+          // Navigate to /homepage_screen with token and userId
           Navigator.pushNamed(
-              context,
-              '/post_screen',
-              arguments: {'userId': userId},);
+            context,
+            '/homepage_screen',
+            arguments: {
+              'userId': userId,
+              'token': token, // Pass the token here
+            },
+          );
         } else {
           setState(() => emailError = "Invalid email or password");
         }
@@ -151,7 +171,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           contentPadding: EdgeInsets.symmetric(horizontal: 18.h, vertical: 16.h),
                           borderDecoration: TextFormFieldStyleHelper.fillGray,
                           fillColor: Colors.white,
-                          errorText: emailError, // Assuming CustomTextFormField supports this
+                          errorText: emailError,
+                          onChanged: (value) {
+                            setState(() {
+                              emailError = _validateEmail(value.trim());
+                            });
+                          },
                         ),
                         SizedBox(height: 18.h),
                         CustomTextFormField(
@@ -172,7 +197,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           contentPadding: EdgeInsets.symmetric(horizontal: 18.h, vertical: 16.h),
                           borderDecoration: TextFormFieldStyleHelper.fillGray,
                           fillColor: Colors.white,
-                          errorText: passwordError, // Assuming CustomTextFormField supports this
+                          errorText: passwordError,
+                          onChanged: (value) {
+                            setState(() {
+                              passwordError = _validatePassword(value.trim());
+                            });
+                          },
                         ),
                         SizedBox(height: 18.h),
                         _buildRememberMeSection(context),
@@ -263,7 +293,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
   Widget _buildRememberMeSection(BuildContext context) {
     return Container(
       width: double.maxFinite,

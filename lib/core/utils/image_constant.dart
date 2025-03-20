@@ -54,7 +54,8 @@ class ImageConstant {
   static String imgRadio = '$imagePath/Radio.png';
   static String imgLineEditorTranslate2 = '$imagePath/translate-2.png';
   static String imgLineMediaNoti = '$imagePath/notification-3-line.png';
-  static String imgAvatar = '$imagePath/Avatar.png';
+  // static String imgAvatar = '$imagePath/Avatar.png';
+  static String imgAvatar = '$imagePath/avatarr.jpg';
   static String imgLineBusinessP = '$imagePath/projector-2-line.png';
   static String imgLineHealthMen = '$imagePath/mental-health-line.png';
   static String imgLineUserContactsLine = '$imagePath/contacts-line.png';

@@ -21,11 +21,12 @@ class MyApp extends StatelessWidget {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return BlocProvider(
-          create: (context) => ThemeBloc(
-            ThemeState(
-              themeType: PrefUtils().getThemeData(),
-            ),
-          ),
+          create: (context) =>
+              ThemeBloc(
+                ThemeState(
+                  themeType: PrefUtils().getThemeData(),
+                ),
+              ),
           child: BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, state) {
               return MaterialApp(

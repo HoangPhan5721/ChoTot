@@ -10,57 +10,86 @@ import 'package:intern/widgets/custom_bottom_bar.dart';
 import 'package:intern/widgets/custom_image_view.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../notification_screen/notification_screen.dart';
-//import 'package:intern/widgets/custom_search_delegate.dart';
 
 class HomePageScreen extends StatelessWidget {
-  const HomePageScreen({super.key});
+  final int? userId;
+  final String? token; // Add token field
 
-  // Thêm phương thức builder để sử dụng trong AppRoutes
+  const HomePageScreen({super.key, this.userId, this.token});
+
   static Widget builder(BuildContext context) {
-    return HomePageScreen(); // Trả về widget HomePageScreen
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final int? userId = args?['userId'] as int?;
+    final String? token = args?['token'] as String?; // Extract token from arguments
+    return HomePageScreen(userId: userId, token: token);
   }
 
   @override
   Widget build(BuildContext context) {
     final PageController pageController = PageController();
+    final TextEditingController searchController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF0047AB),
+        backgroundColor: const Color(0xFF0047AB),
         title: Container(
           width: 300,
           height: 45,
-          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(25.0),
           ),
           child: TextField(
-            decoration: InputDecoration(
+            controller: searchController,
+            decoration: const InputDecoration(
               hintText: 'Tìm kiếm',
               hintStyle: TextStyle(color: Colors.grey),
               border: InputBorder.none,
               icon: Icon(Icons.search, color: Colors.grey),
             ),
-            onChanged: (value) {
-              // Xử lý khi người dùng nhập vào ô tìm kiếm
-              // Bạn có thể thêm logic để tìm kiếm sản phẩm tại đây
+            onSubmitted: (value) {
+              if (value.isNotEmpty) {
+                Navigator.pushNamed(
+                  context,
+                  '/search_results_screen',
+                  arguments: {'query': value},
+                );
+              }
             },
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications, color: Colors.white,),
+            icon: const Icon(Icons.notifications, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NotificationScreen()),
+                MaterialPageRoute(builder: (context) => const NotificationScreen()),
               );
             },
           ),
           IconButton(
-            icon: Icon(Icons.chat, color: Colors.white,),
-            onPressed: () {},
+            icon: const Icon(Icons.chat, color: Colors.white),
+            onPressed: () {
+              if (token == null || userId == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Please log in to access chat')),
+                );
+                return;
+              }
+              // Navigate to ChatScreen with token and placeholder seller info
+              Navigator.pushNamed(
+                context,
+                '/chat_screen',
+                arguments: {
+                  'token': token,
+                  'sellerId': '1', // Replace with actual sellerId if available
+                  'sellerName': 'Hoang Phan', // Replace with actual seller name
+                  'profileImage': '', // Replace with actual profile image if available
+                },
+              );
+            },
           ),
         ],
       ),
@@ -72,7 +101,6 @@ class HomePageScreen extends StatelessWidget {
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    // Banner quảng cáo sử dụng PageView
                     Container(
                       height: 180,
                       child: PageView(
@@ -96,17 +124,15 @@ class HomePageScreen extends StatelessWidget {
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),
-                          
                         ],
                       ),
                     ),
-                    // SmoothPageIndicator
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SmoothPageIndicator(
                         controller: pageController,
                         count: 3,
-                        effect: WormEffect(
+                        effect: const WormEffect(
                           dotHeight: 8.0,
                           dotWidth: 8.0,
                           spacing: 4.0,
@@ -115,9 +141,8 @@ class HomePageScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Khám phá danh mục
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -127,9 +152,8 @@ class HomePageScreen extends StatelessWidget {
                       ),
                     ),
                     CategoryList(),
-                    // Tin đăng mới
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -146,9 +170,12 @@ class HomePageScreen extends StatelessWidget {
           body: BlocBuilder<HomePageBloc, HomePageState>(
             builder: (context, state) {
               if (state is HomePageLoading) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (state is HomePageLoaded) {
-                return ProductGrid(productList: state.productList);
+                return ProductGrid(
+                  productList: state.productList,
+                  token: token, // Token is passed here
+                );
               } else if (state is HomePageError) {
                 return Center(child: Text(state.message));
               }
@@ -157,18 +184,30 @@ class HomePageScreen extends StatelessWidget {
           ),
         ),
       ),
-        bottomNavigationBar:
-        SizedBox(
-          width: double.maxFinite,
-          child: _buildBottomBar(context),
-        )
+      bottomNavigationBar: _buildBottomBar(context),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          print("Navigating to PostScreen with userId: $userId");
+          Navigator.pushNamed(
+            context,
+            '/post_screen',
+            arguments: {'userId': userId},
+          );
+        },
+        backgroundColor: const Color(0xFF0047AB),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
     );
   }
+
   Widget _buildBottomBar(BuildContext context) {
     return SizedBox(
       width: double.maxFinite,
       child: CustomBottomBar(
-        onChanged: (BottomBarEnum type) {},
+        userId: userId,
+        onChanged: (BottomBarEnum type) {
+          print("BottomBar selected: $type with userId: $userId");
+        },
       ),
     );
   }
